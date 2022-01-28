@@ -37,6 +37,22 @@
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
                 </div>
+                <div class="form-group col-md-12 mb-3">
+                    <label for="">لون أيقونة القسم</label>
+                    <input type="color" name="background_color" class="form-control col-md-2  @error('background-color') is-invalid @enderror"
+                        accept="image/*">
+                    @error('background_color')
+                        <p class="invalid-feedback">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="form-group col-md-12 mb-3">
+                    <label for="">لون خط القسم</label>
+                    <input type="color" name="font_color" class="form-control col-md-2  @error('font_color') is-invalid @enderror"
+                        accept="image/*">
+                    @error('font_color')
+                        <p class="invalid-feedback">{{ $message }}</p>
+                    @enderror
+                </div>
                 <div class="col-md-6 mb-4">
                     <label>الحالة </label>
                     <div class="form-check">

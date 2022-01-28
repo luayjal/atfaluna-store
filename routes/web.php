@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Front\CategoryController;
+use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\ProductsController as FrontProductsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,9 +20,6 @@ use App\Http\Controllers\Admin\CouponController;
 |
 */
 
-Route::get('/', function () {
-    return view('front.index');
-});
 
 Route::get('/dashboard/home', function () {
     return view('dashboard');
@@ -33,7 +35,14 @@ Route::prefix('dashboard')->middleware('auth','type-user:admin,super-admin')->as
     'products'=> ProductsController::class,
     'coupons'=> CouponController::class,
     ]);
-  
+
 });
 
 require __DIR__.'/auth.php';
+
+/* front route */
+
+Route::get('/', [HomeController::class,'index']);
+Route::get('product-details/{slug}', [FrontProductsController::class,'prdoductDetails'])->name('product.details');
+Route::get('category/{slug}', [CategoryController::class,'products'])->name('category.product');
+Route::post('add-cart', [CartController::class,'store'])->name('add.cart');

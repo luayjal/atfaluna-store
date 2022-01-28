@@ -41,7 +41,7 @@ class CategoriesController extends Controller
     public function create()
     {
         $categories = Category::all();
-       dd($categories);
+       //dd($categories);
         return view('dashboard.category.create',[
             'categories' => $categories,
         ]);

@@ -23,7 +23,8 @@ class CreateCategoriesTable extends Migration
                 ->nullOnDelete();
 
            
-
+            $table->string('background_color')->nullable();
+            $table->string('font_color')->nullable();
             $table->enum('status',['active','inactive'])->default('active');
             $table->string('image')->nullable();
             $table->softDeletes();

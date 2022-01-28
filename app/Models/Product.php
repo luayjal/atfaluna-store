@@ -23,7 +23,15 @@ class Product extends Model
     public function sizes(){
         return $this->belongsToMany(Size::class,'product_size','product_id','size_id');
     }
-
+    /**
+     * Get all of the cart for the Product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cart()
+    {
+        return $this->hasMany(Cart::class, 'product_id', 'id');
+    }
     public function getImageUrlAttribute()
     {
         return asset('uploads/'.$this->image);

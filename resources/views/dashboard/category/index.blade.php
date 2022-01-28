@@ -24,6 +24,7 @@
                       
                       <th >اسم القسم</th>
                       <th >الصورة</th>
+                      <th >اللون</th>
                       <th >القسم الرئيسي</th>
                       <th >الحالة</th>
                       <th >العمليات</th>
@@ -39,6 +40,9 @@
                             @if ($category->image)
                             <img src="{{ asset('uploads/'.$category->image) }}" style="width:90px;height:70px" alt="Arabic Image">
                             @endif
+                          </td>
+                          <td style="background: {{$category->background_color}}; color:{{$category->font_color}};">
+                            {{$category->name}}
                           </td>
                           <td>
                             {{$category->parent->name}}

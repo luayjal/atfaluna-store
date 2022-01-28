@@ -2,12 +2,13 @@
 
 namespace App\View\Components;
 
-use App\Models\Cart;
-use App\Models\Category;
+use App\Models\Cart as CartModel;
 use Illuminate\View\Component;
 
-class FrontLayout extends Component
+class Cart extends Component
 {
+    public $carts;
+
     /**
      * Create a new component instance.
      *
@@ -15,7 +16,7 @@ class FrontLayout extends Component
      */
     public function __construct()
     {
-        //
+        $this->carts = CartModel::where('cart_id' , cart_id())->get();
     }
 
     /**
@@ -25,11 +26,6 @@ class FrontLayout extends Component
      */
     public function render()
     {
-        $categories = Category::where('status','active')->get();
-        $cart = Cart::where('cart_id' , cart_id())->get();
-        return view('layouts.front-layout',[
-            'categories' => $categories,
-            'cart' => $cart
-        ]);
+        return view('layouts.cart');
     }
 }

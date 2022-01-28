@@ -695,7 +695,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   max-height: 100%;
   position:absolute;
   top: 0; 
-  left: 0; 
+  right: 0; 
   bottom: 0;
   margin: auto;
 }
@@ -745,12 +745,12 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 
 .main-menu-m {
   padding-top: 10px;
-  padding-bottom: 10px;
-  background-color: #717fe0;
+  /* padding-bottom: 10px; */
+  background-color: #3a3b3d;
 }
 
 .main-menu-m > li > a {
-  font-family: Poppins-Medium;
+  font-family: cairo-Medium;
   font-size: 14px;
   color: white;
   line-height: 2.8;
@@ -774,7 +774,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   justify-content: center;
   align-items: center;
   position: absolute;
-  right: 10px;
+  left: 10px;
   top: 2px;
   padding: 10px;
   cursor: pointer;
