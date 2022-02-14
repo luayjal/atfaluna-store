@@ -16,3 +16,15 @@ use Illuminate\Support\Facades\Cookie;
 
 };
 
+function wishlist_id(){
+
+    $id = Cookie::get('wishlist_id');
+
+    if (!$id) {
+        $id = Str::uuid();
+        Cookie::queue('wishlist_id', $id, 60 * 24 * 30);
+    }
+
+    return $id;
+
+};

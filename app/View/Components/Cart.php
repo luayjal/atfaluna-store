@@ -8,7 +8,7 @@ use Illuminate\View\Component;
 class Cart extends Component
 {
     public $carts;
-
+    public $totalPrice;
     /**
      * Create a new component instance.
      *
@@ -17,6 +17,15 @@ class Cart extends Component
     public function __construct()
     {
         $this->carts = CartModel::where('cart_id' , cart_id())->get();
+        $cart_id = cart_id();
+        $carts = CartModel::where([
+            'cart_id' => $cart_id,
+        ])->get();
+        
+        $this->totalPrice = $carts->sum(function($item)
+        {
+            return $item->product->price * $item->quantity;
+        }); 
     }
 
     /**

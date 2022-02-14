@@ -62,8 +62,27 @@
                     contentType: false,
                     cache: false,
                     success: function(data) {
+                        console.log(data);
+                        
                         $('.js-show-cart').attr('data-notify',data.count);
                         swal(data.product.name,"تم الاضافة للعربة بنجاح", "success");
+                        $('.carts').append(` <li class="header-cart-item flex-w flex-t m-b-12">
+                        <div class="header-cart-item-img">
+                            <img src="${data['product']['image_url']}" alt="IMG">
+                        </div>
+                        
+                        <div class="header-cart-item-txt p-t-8">
+                            <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+                            ${data['product']['name']}
+                            </a>
+    
+                            <span class="header-cart-item-info">
+                            ${data['cart']['quantity']}×  ${data['product']['price']} رس
+                            </span>
+                        </div>
+                    </li>`);
+                    $(".totalPrice").text("");
+                    $(".totalPrice").text( ' المجموع :'+ data['totalPrice']+"ر.س");
                     },
                     error: function(reject) {
                         swal('', "حدث خطأ بعملية الإضافة", "error");

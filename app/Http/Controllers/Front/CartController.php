@@ -10,6 +10,23 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+
+    public function index()
+    {
+        $cart_id = cart_id();
+        $carts = Cart::where([
+            'cart_id' => $cart_id,
+        ])->get();
+        $totalPrice = $carts->sum(function($item)
+        {
+            return $item->product->price * $item->quantity;
+        });      
+        
+        return view('front.cart',['carts'=>$carts,'totalPrice'=>$totalPrice]);
+    }
+
+
+    
     public function store(Request $request)
     {
 
@@ -45,12 +62,38 @@ class CartController extends Controller
             ]);
 
         }
+        $carts = Cart::where([
+            'cart_id' => cart_id(),
+        ])->get();
+        $totalPrice = $carts->sum(function($item)
+        {
+            return $item->product->price * $item->quantity;
+        }); 
         $data = [
             'cart' =>$cart,
             'count' => $cart->count(),
-            'product' => $product
+            'product' => $product,
+            'totalPrice'=>$totalPrice
+
         ];
          return response()->json($data, 200);
+  }
 
-}
+        public function update_quantity(Request $request)
+        {
+            $cart =  Cart::with('product')->where('product_id',$request->id)->where('cart_id', cart_id())->first();
+            $cart->quantity=$request->quantity;
+            $cart->save();
+            
+            $carts = Cart::where([
+                'cart_id' => cart_id(),
+            ])->get();
+            $totalPrice = $carts->sum(function($item)
+            {
+                return $item->product->price * $item->quantity;
+            }); 
+            
+            return response()->json(['cart'=>$cart,'totalPrice'=>$totalPrice]);
+        }
+        
 }

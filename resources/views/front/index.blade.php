@@ -5,23 +5,26 @@
 	<section class="section-slide">
 		<div class="wrap-slick1 rs1-slick1">
 			<div class="slick1">
-				<div class="item-slick1" style="background-image: url({{asset('front/images/gallery-0.jpg')}});">
+
+                @foreach($sliders as $slider)
+				<div class="item-slick1" style="background-image: url({{asset('uploads/'.$slider->image_path)}});">
 					<div class="container h-full">
 						<div class="flex-col-l-m h-full p-t-100 p-b-30">
 							<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
 								<span class="ltext-202 cl0 respon2">
-									متجر أطفالنا
+									{{$slider->title}}
+
 								</span>
 							</div>
-								
+
 							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
 								<h2 class="ltext-104 cl0 p-t-19 p-b-43 respon1">
-								أجمل ملابس الأطفال الأنيقة والجميلة
+                                    {{$slider->description}}
 								</h2>
 							</div>
-								
+
 							<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
-								<a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+								<a href="{{$slider->link}}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
 									تسوق الآن
 								</a>
 							</div>
@@ -29,53 +32,7 @@
 					</div>
 				</div>
 
-				<div class="item-slick1" style="background-image: url({{asset('front/images/gallery-00.jpg')}});">
-					<div class="container h-full">
-						<div class="flex-col-l-m h-full p-t-100 p-b-30">
-							<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
-								<span class="ltext-202 cl0 respon2">
-									متجر أطفالنا
-								</span>
-							</div>
-								
-							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
-								<h2 class="ltext-104 cl0 p-t-19 p-b-43 respon1">
-								أجمل ملابس الأطفال الأنيقة والجميلة
-								</h2>
-							</div>
-								
-							<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
-								<a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-									تسوق الآن
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="item-slick1" style="background-image: url({{asset('front/images/gallery-000.jpg')}});">
-					<div class="container h-full">
-						<div class="flex-col-l-m h-full p-t-100 p-b-30">
-							<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
-								<span class="ltext-202 cl0 respon2">
-									متجر أطفالنا
-								</span>
-							</div>
-								
-							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
-								<h2 class="ltext-104 cl0 p-t-19 p-b-43 respon1">
-								أجمل ملابس الأطفال الأنيقة والجميلة
-								</h2>
-							</div>
-								
-							<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
-								<a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-									تسوق الآن
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
+                @endforeach
 			</div>
 		</div>
 	</section>
@@ -85,7 +42,7 @@
 	<div class="sec-banner bg0">
 		<!-- <div class="flex-w flex-c-m">
 			<div class="size-202 m-lr-auto respon4">
-				
+
 				<div class="block1 wrap-pic-w">
 					<img src="images/banner-04.jpg" alt="IMG-BANNER">
 
@@ -110,7 +67,7 @@
 			</div>
 
 			<div class="size-202 m-lr-auto respon4">
-				
+
 				<div class="block1 wrap-pic-w">
 					<img src="images/banner-05.jpg" alt="IMG-BANNER">
 
@@ -135,7 +92,7 @@
 			</div>
 
 			<div class="size-202 m-lr-auto respon4">
-				
+
 				<div class="block1 wrap-pic-w">
 					<img src="images/banner-06.jpg" alt="IMG-BANNER">
 
@@ -177,7 +134,7 @@
 						جميع المنتجات
 					</button>
 
-					
+
 					<button style="background: #5dcbfc; color:#fff; padding: 15px 20px;" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
 									ملابس أطفال أولاد
 					</button>
@@ -198,7 +155,7 @@
 						ألعاب
 					</button>
 
-				
+
 				</div>
 
 				<div class="flex-w flex-c-m m-tb-10">
@@ -214,7 +171,7 @@
 						بحث
 					</div>
 				</div>
-				
+
 				<!-- Search product -->
 				<div class="dis-none panel-search w-full p-t-10 p-b-15">
 					<div class="bor8 dis-flex p-l-15">
@@ -223,7 +180,7 @@
 						</button>
 
 						<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="بحث">
-					</div>	
+					</div>
 				</div>
 
 				<!-- Filter -->
@@ -591,7 +548,7 @@
 						<div class="block2-txt flex-w flex-t p-t-14">
 							<div class="block2-txt-child1 flex-col-l ">
 								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Vintage Inspired Classic 
+									Vintage Inspired Classic
 								</a>
 
 								<span class="stext-105 cl3">
@@ -751,7 +708,7 @@
 						<div class="block2-txt flex-w flex-t p-t-14">
 							<div class="block2-txt-child1 flex-col-l ">
 								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Herschel supply 
+									Herschel supply
 								</a>
 
 								<span class="stext-105 cl3">

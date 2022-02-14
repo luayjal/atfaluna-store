@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory; use SoftDeletes;
     protected $fillable = ['name', 'slug', 'category_id','certificate','description','image', 'price','sale_price','quantity', 'status'];
-
+    protected $appends = ['image_url'];
     public function category(){
         return $this->belongsTo(Category::class);
     }
@@ -31,6 +31,20 @@ class Product extends Model
     public function cart()
     {
         return $this->hasMany(Cart::class, 'product_id', 'id');
+    }
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class, 'product_id', 'id');
+    }
+    public function isinwishlist($prdouct_id)
+    {
+        $p = Wishlist::where('product_id',$prdouct_id)->where('wishlist_id',wishlist_id())->first();
+        if ($p) {
+            return true; 
+        } else {
+            return false; 
+        }
+        
     }
     public function getImageUrlAttribute()
     {

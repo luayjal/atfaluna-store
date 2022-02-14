@@ -75,7 +75,7 @@
 						<!--  -->
                         <form id="form_cart">
 						<div class="p-t-33">
-                            <input type="hidden" name="product_id" value="{{$product->id}}">
+                            <input  type="hidden" name="product_id" value="{{$product->id}}">
                             @csrf
 							<div class="flex-w flex-r-m p-b-10">
 								<div class="size-203 flex-c-m respon6">
@@ -153,7 +153,9 @@
                       </form>
 						<!--  -->
 						<div class="flex-w flex-m p-r-100 p-t-40 respon7">
-							<div class="flex-m bor20 p-l-10 m-l-11">
+							<div class="wishlist flex-m bor20 p-l-10 m-l-11">
+                                @csrf
+                                <input type="hidden" class="product_id" value="{{$product->id}}">
 								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100" data-tooltip="Add to Wishlist">
 									<i class="zmdi zmdi-favorite"></i>
 								</a>
@@ -398,7 +400,6 @@
 										{{$product->price}}
 									</span>
 								</div>
-
 								<div class="block2-txt-child2 flex-r p-t-3">
 									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
 										<img class="icon-heart1 dis-block trans-04" src="{{asset('images/icons/icon-heart-01.png')}}" alt="ICON">
@@ -645,8 +646,50 @@
     <style>
      </style>
     @endpush
-    
-    @push('js')
+	@push('js')
+
+	<script>
+
+
+$(document).ready(function() {
+				var product_id;
+
+				$('.wishlist').click(function(e) {
+					e.preventDefault();
+					var product_id = $(".product_id").val();
+					console.log(product_id);
+
+					$(this).siblings().each(function(){
+						if($(this).hasClass("product_id")){
+							product_id = $(this).val();
+							console.log(product_id);
+						}
+						
+					
+					});
+				//	alert("comment_id: " +comment_id+ " body: " +body);
+				$.ajax({
+				url: '/add-wishlist',
+				type:"POST",
+				data:{
+					"_token": "{{ csrf_token() }}",
+					product_id:product_id
+				},
+				success:function(data){
+					console.log(data);
+								console.log(data.count);
+
+								$('.wishlist_count').attr('data-notify',data.count);
+					
+					
+				
+
+				},
+				});
+				});
+
+			});
+	</script>
     <script>
         $(document).ready(function() {
         $("label").click(function(){

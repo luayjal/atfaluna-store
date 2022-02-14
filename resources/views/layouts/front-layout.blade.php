@@ -3,6 +3,8 @@
 <head>
 	<title>متجر أطفالنا | الرئيسية</title>
 	<meta charset="UTF-8">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
+
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
 	<link rel="icon" type="image/png" href="{{asset('front/images/icons/favicon.png')}}"/>
@@ -50,7 +52,7 @@
 					</div>
 
 					<div class="right-top-bar flex-w h-full">
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
+						<a href="{{route('contact_us')}}" class="flex-c-m trans-04 p-lr-25">
 							تواصل معنا
 						</a>
 
@@ -99,7 +101,7 @@
                             @endforeach
 
 
-						{{-- 	<li  style="background: #ea4a76; color:#fff;" > <!-- class="label1" data-label1="hot" -->
+						<li  style="background: #ea4a76; color:#fff;" > <!-- class="label1" data-label1="hot" -->
 								<a  style=" color:#fff;" href="shoping-cart.html">ملابس أطفال بنات</a>
 							</li>
 
@@ -113,7 +115,7 @@
 
 							<li style="background: #ff9b04;">
 								<a style=" color:#fff;" href="contact.html">العاب</a>
-							</li> --}}
+							</li> 
 						</ul>
 					</div>
 
@@ -126,8 +128,11 @@
 						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="{{$cart->count()}}">
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</div>
-
-						<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
+						@php
+							$wishlist = App\Models\Wishlist::where('wishlist_id',wishlist_id())->get();
+							$count = $wishlist->count();
+						@endphp
+						<a href="{{route('wishlist')}}" class="wishlist_count icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="{{$count}}">
 							<i class="zmdi zmdi-favorite-outline"></i>
 						</a>
 					</div>
@@ -180,7 +185,7 @@
 
 				<li>
 					<div class="right-top-bar flex-w h-full">
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
+						<a href="{{route('contact_us')}}" class="flex-c-m trans-04 p-lr-25">
 							تواصل معنا
 						</a>
 

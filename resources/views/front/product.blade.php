@@ -253,6 +253,8 @@
 
 			<div class="row isotope-grid">
 				@foreach ($products as $product)
+				
+
 				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item men">
 					<!-- Block2 -->
 					<div class="block2">
@@ -274,9 +276,12 @@
 									{{$product->price}} ر.س
 								</span>
 							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
+							
+							<div class="wishlist block2-txt-child2 flex-r p-t-3">
+								@csrf
+				<input class="product_id" name="product_id" type="hidden"  value="{{$product->id}}">
 								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+									
 									<img class="icon-heart1 dis-block trans-04" src="{{asset('front/images/icons/icon-heart-01.png')}}" alt="ICON">
 									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="{{asset('front/images/icons/icon-heart-02.png')}}" alt="ICON">
 								</a>
@@ -451,4 +456,85 @@
 			</div>
 		</div>
 	</div>
+	@push('js')
+		<script>
+			/*
+			$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+var product_id = $(".id").val();
+
+			$(".wishlist"+product_id).click(function() {
+			var product_id = $(".id").val();
+			console.log(product_id);
+
+			$.ajax({
+				url:'/add-wishlist',
+				type: 'POST',  // http method
+				headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+				data: {product_id:product_id,},  // data to submit				
+				success: function (data, status, xhr) {
+					// after success your get data
+					console.log(data);
+					console.log(data.count);
+
+					$('.wishlist_count').attr('data-notify',data.count);
+
+				},
+				error: function (jqXhr, textStatus, errorMessage) { // if any error come then 
+					
+				}
+});
+			});
+
+
+*/
+
+
+
+
+						$(document).ready(function() {
+				var product_id;
+
+				$('.btn-addwish-b2').click(function(e) {
+					e.preventDefault();
+					//var product_id = $(".product_id").val();
+					//console.log(product_id);
+
+					$(this).siblings().each(function(){
+						if($(this).hasClass("product_id")){
+							product_id = $(this).val();
+							console.log(product_id);
+						}
+						
+					
+					});
+				//	alert("comment_id: " +comment_id+ " body: " +body);
+				$.ajax({
+				url: '/add-wishlist',
+				type:"POST",
+				data:{
+					"_token": "{{ csrf_token() }}",
+					product_id:product_id
+				},
+				success:function(data){
+					console.log(data);
+								console.log(data.count);
+
+								$('.wishlist_count').attr('data-notify',data.count);
+					
+					
+				
+
+				},
+				});
+				});
+
+			});
+		</script>
+	@endpush
 </x-front-layout>

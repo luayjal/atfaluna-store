@@ -13,7 +13,7 @@
         </div>
 
         <div class="header-cart-content flex-w js-pscroll">
-            <ul class="header-cart-wrapitem w-full">
+            <ul class="carts header-cart-wrapitem w-full">
                 @foreach ($carts as $cart)
                 <li class="header-cart-item flex-w flex-t m-b-12">
                     <div class="header-cart-item-img">
@@ -35,16 +35,16 @@
             </ul>
 
             <div class="w-full">
-                <div class="header-cart-total w-full p-tb-40">
-                    المجموع : 75.00 ر.س
+                <div class="totalPrice header-cart-total w-full p-tb-40">
+                    المجموع : {{$totalPrice}} ر.س
                 </div>
 
                 <div class="header-cart-buttons flex-w w-full">
-                    <a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-l-8 m-b-10">
+                    <a href="{{route('cart')}}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-l-8 m-b-10">
                         عرض العربة
                     </a>
 
-                    <a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+                    <a href="{{route('cart')}}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
                         اكمال الطلب
                     </a>
                 </div>

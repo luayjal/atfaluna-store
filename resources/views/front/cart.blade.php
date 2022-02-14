@@ -30,54 +30,35 @@
 									<th class="column-4">الكمية</th>
 									<th class="column-5">المجموع</th>
 								</tr>
-
+								@foreach ($carts as $cart)
+								<input class="id" type="hidden" value="{{$cart->product->id}}">
+								@csrf
 								<tr class="table_row">
 									<td class="column-1">
 										<div class="how-itemcart1">
-											<img src="images/item-cart-04.jpg" alt="IMG">
+											<img src="{{$cart->product->image_url}}" alt="IMG">
 										</div>
 									</td>
-									<td class="column-2">جاكيت ولادي</td>
-									<td class="column-3">36.00 ر.س</td>
+									<td class="column-2">{{$cart->product->name}}</td>
+									<td class="column-3">{{$cart->product->price}} ر.س</td>
 									<td class="column-4">
+										
 										<div class="wrap-num-product flex-w m-r-auto m-l-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+											<div class="update_quantity btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
 												<i class="fs-16 zmdi zmdi-minus"></i>
 											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+											<input class="quantity mtext-104 cl3 txt-center num-product" type="number" name="quantity" value="{{$cart->quantity}}">
+	
+											<div class="update_quantity btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
 												<i class="fs-16 zmdi zmdi-plus"></i>
 											</div>
 										</div>
 									</td>
-									<td class="column-5">36.00 ر.س</td>
+									<td class="productPrice column-5">{{$cart->product->price * $cart->quantity}} ر.س</td>
 								</tr>
 
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="images/item-cart-05.jpg" alt="IMG">
-										</div>
-									</td>
-									<td class="column-2"> جاكيت كحلي</td>
-									<td class="column-3">16.00 ر.س</td>
-									<td class="column-4">
-										<div class="wrap-num-product flex-w m-r-auto m-l-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
+								@endforeach
 
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product2" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
-										</div>
-									</td>
-									<td class="column-5">16.00 ر.س</td>
-								</tr>
 							</table>
 						</div>
 
@@ -89,10 +70,11 @@
 									تطبيق الكوبون
 								</div>
 							</div>
-
+								<a href="{{url('/cart')}}">
 							<div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
 								تحديث العربة
 							</div>
+						</a>
 						</div>
 					</div>
 				</div>
@@ -111,8 +93,8 @@
 							</div>
 
 							<div class="size-208">
-								<span class="mtext-110 cl2">
-									79.65 ر.س
+								<span class="totalPrice mtext-110 cl2">
+									{{$totalPrice}} ر.س
 								</span>
 							</div>
 						</div>
@@ -194,7 +176,36 @@
 			</div>
 		</div>
 	</form>
+	@push('js')
+	<script>$(".update_quantity").click(function() {
+		var quantity = $(".quantity").val();
+			var id = $(".id").val();
+			console.log(id);
+			console.log(quantity);
+
+			$.ajax({
+				url:'update-quantity',
+				type: 'POST',  // http method
+				data: {id:id,quantity:quantity, _token: $('meta[name="csrf-token"]').attr('content')},  // data to submit
+				
+				success: function (data, status, xhr) { // after success your get data
+					console.log(data);
+					$(".totalPrice").text("");
+					$(".totalPrice").html(data['totalPrice']+"ر.س");
+					$(".productPrice").text("");
+					$(".productPrice").html(data['cart']['product']['price']*data['cart']['quantity']+"ر.س");
+
+				},
+				error: function (jqXhr, textStatus, errorMessage) { // if any error come then 
+					
+				}
+});
+	})
+			
 		
+	</script>
+@endpush
+
 	
 		
 </x-front-layout>

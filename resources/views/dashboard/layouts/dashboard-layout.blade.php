@@ -284,10 +284,104 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li>
 
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+            <a href="{{route('admin.messages')}}" class="nav-link">
+              <i class="nav-icon fas fa-envelope"></i>
               <p>
-               المنتجات
+               الرسائل
+              </p>
+            </a>
+          </li>
+
+
+          <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link @if(request()->routeIs('admin.delivery.*')) active @endif">
+                <i class="nav-icon fas fa-shipping-fast"></i>
+                <p>
+                    مناديب التوصيل
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{route('admin.delivery.index')}}" class="nav-link @if(request()->routeIs('admin.delivery.index')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>عرض مناديب التوصيل</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('admin.delivery.create')}}" class="nav-link @if(request()->routeIs('admin.delivery.create')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>إضافة  مندوب توصيل</p>
+                    </a>
+                </li>
+                
+            </ul>
+        </li>
+
+        <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link @if(request()->routeIs('admin.city.*')) active @endif">
+                <i class="nav-icon fas fa-city"></i>
+                <p>
+                    المدن
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{route('admin.city.index')}}" class="nav-link @if(request()->routeIs('admin.city.index')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>عرض المدن</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('admin.city.create')}}" class="nav-link @if(request()->routeIs('admin.city.create')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>إضافة مدينة</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('admin.city.trash')}}" class="nav-link @if(request()->routeIs('admin.city.trash')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p> المدن المحذوفة</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+
+
+        <li class="nav-item has-treeview ">
+          <a href="#" class="nav-link @if(request()->routeIs('admin.slider.*')) active @endif">
+            <i class="nav-icon fas fa-ad"></i>
+              <p>
+                 الاعلانات(السلايدر)
+                  <i class="right fas fa-angle-left"></i>
+              </p>
+          </a>
+          <ul class="nav nav-treeview">
+              <li class="nav-item">
+                  <a href="{{route('admin.slider.index')}}" class="nav-link @if(request()->routeIs('admin.slider.index')) active @endif">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>عرض الاعلانات(السلايدر)</p>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{route('admin.slider.create')}}" class="nav-link @if(request()->routeIs('admin.slider.create')) active @endif">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>إضافة اعلان (سلايدر)</p>
+                  </a>
+              </li>
+
+          </ul>
+      </li>
+
+
+      
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-envelope"></i>
+              <p>
+               الرسائل
                 <span class="right badge badge-danger">New</span>
               </p>
             </a>
