@@ -12,8 +12,10 @@
             {{session('success')}}
           </div>
          @endif
+         @can('create', App\Models\City::class)
 
           <a class="btn btn-info mb-3" href="{{route('admin.city.create')}}">اضافة مدينة <i class="fas fa-plus"></i></a>
+          @endcan
             <div class="box-body">
               <table  class="table table-bordered border-primary">
 
@@ -47,13 +49,18 @@
                           </td>
 
                          <td style="text-align: center; margin-top:20px">
-                             <a href="{{route('admin.city.edit',$city->id)}}"  class="btn btn-primary">تعديل <i class="far fa-edit"></i></a>
+                          @can('update', $city)
 
-                            <form class="d-inline" action="{{route('admin.city.destroy',$city->id)}}" method="post">
+                             <a href="{{route('admin.city.edit',$city->id)}}"  class="btn btn-primary">تعديل <i class="far fa-edit"></i></a>
+@endcan
+@can('delete', $city)
+            
+                    <form class="d-inline" action="{{route('admin.city.destroy',$city->id)}}" method="post">
                               @csrf
                               @method('delete')
                               <button class="btn btn-danger"><span style="color: white"> حذف <i class="fas fa-trash"></i> </span> </button>
                             </form>
+                            @endcan
                         </td>
 
                       </tr>

@@ -12,11 +12,13 @@ class CategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+    *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
+        $this->authorize('viewAny', Category::class); 
+
         $categores = Category::latest()->paginate();
 
         return view('dashboard.category.index',[
@@ -40,6 +42,8 @@ class CategoriesController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Category::class); 
+
         $categories = Category::all();
        //dd($categories);
         return view('dashboard.category.create',[
@@ -55,6 +59,8 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Category::class); 
+
         $request->validate([
             'name'=>'required|min:3|max:100|unique:categories,name',
             'image' =>'image',
@@ -101,6 +107,8 @@ class CategoriesController extends Controller
     public function edit($id)
     {
         $category = Category::findOrFail($id);
+        $this->authorize('update', $category); 
+
         $categories = Category::all();
        
         return view('dashboard.category.edit',[
@@ -119,6 +127,8 @@ class CategoriesController extends Controller
     public function update(Request $request, $id)
     {
         $category = Category::findOrFail($id);
+        $this->authorize('update', $category); 
+
         $request->merge([
             'slug' => Str::slug_ar($request->name),
           ]);
@@ -144,7 +154,8 @@ class CategoriesController extends Controller
     public function restore($id){
 
         $category = Category::withTrashed()->findOrFail($id);
-      
+        $this->authorize('delete', $category); 
+
             $category->restore();
         
             return redirect()->route('admin.categories.index')->with('success','تم استرجاع القسم بنجاح');    
@@ -159,7 +170,8 @@ class CategoriesController extends Controller
     public function destroy($id)
     {
        $category = Category::withTrashed()->findOrFail($id);
-      
+       $this->authorize('delete', $category); 
+
        if ($category->trashed()) {
         $category->restore();
         $category->forceDelete();

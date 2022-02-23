@@ -19,6 +19,8 @@ class SliderController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Slider::class); 
+
         $sliders = slider::latest()->paginate();
 
         return view('dashboard.slider.index',[
@@ -34,6 +36,7 @@ class SliderController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Slider::class); 
 
         return view('dashboard.slider.create');
     }
@@ -46,6 +49,8 @@ class SliderController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Slider::class); 
+
         $request->validate([
             'image' =>'image',
             'link' =>'required',
@@ -84,6 +89,7 @@ class SliderController extends Controller
     public function edit($id)
     {
         $slider = Slider::findOrFail($id);
+        $this->authorize('update', $slider); 
 
         return view('dashboard.slider.edit',[
             'slider' => $slider,
@@ -99,12 +105,15 @@ class SliderController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $slider = Slider::findOrFail($id);
+
+        $this->authorize('update', $slider); 
+
         $request->validate([
             'link' =>'required',
         ],[
             'link.required'=>'مطلوب!، الرجاء إدراج الرابط'
         ]);
-        $slider = Slider::findOrFail($id);
         $data = $request->all();
         if($request->hasFile('image')) {
             $file = $request->file('image');
@@ -124,6 +133,8 @@ class SliderController extends Controller
     public function destroy($id)
     {
         $slider = Slider::findOrFail($id);
+        $this->authorize('delete', $slider); 
+
         $slider->delete();
 
        return redirect()->route('admin.slider.index')->with('success','تم حذف السلايدر بنجاح');

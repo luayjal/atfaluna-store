@@ -25,7 +25,7 @@ class FrontLayout extends Component
      */
     public function render()
     {
-        $categories = Category::where('status','active')->get();
+        $categories = Category::where('status','active')->whereDoesntHave('parent')->get();
         $cart = Cart::where('cart_id' , cart_id())->get();
         return view('layouts.front-layout',[
             'categories' => $categories,

@@ -15,6 +15,8 @@ class CouponController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Coupon::class); 
+
         $coupons = Coupon::latest()->paginate();
         return view('dashboard.coupon.index',['coupons' => $coupons]);
     }
@@ -26,6 +28,8 @@ class CouponController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Coupon::class); 
+
         return view('dashboard.coupon.create');
     }
 
@@ -37,6 +41,8 @@ class CouponController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Coupon::class); 
+
         $request->validate([
             'code'=>'required|unique:coupons,code',
             'type'=>'required',
@@ -82,7 +88,8 @@ class CouponController extends Controller
     public function edit($id)
     {
         $coupon = Coupon::findOrFail($id);
-       
+        $this->authorize('update', $coupon); 
+
        
         return view('dashboard.coupon.edit',[
             'coupon' => $coupon,
@@ -100,6 +107,8 @@ class CouponController extends Controller
     public function update(Request $request, $id)
     {
         $coupon = Coupon::findOrFail($id);
+        $this->authorize('update', $coupon); 
+
         $request->validate([
             'code'=>'required',
             'type'=>'required',
@@ -130,6 +139,8 @@ class CouponController extends Controller
     public function destroy($id)
     {
         $coupon = Coupon::findOrFail($id);
+        $this->authorize('delete', $coupon); 
+
         $coupon->delete();
         return redirect()->route('admin.coupons.index')->with('status','تم الحذف بنجاح');
     }

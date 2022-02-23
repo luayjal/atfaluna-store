@@ -60,9 +60,9 @@
 							 من نحن
 						</a>
 
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
+						{{-- <a href="{{route('login')}}" class="flex-c-m trans-04 p-lr-25">
 							تسجيل الدخول
-						</a>
+						</a> --}}
 
 						{{-- <a href="#" class="flex-c-m trans-04 p-lr-25">
 							EN
@@ -96,12 +96,18 @@
                             @foreach ($categories as $category)
                             <li style="background: {{$category->background_color}}; ">
 								<a  style="color:{{$category->font_color}};" href="{{route('category.product',$category->slug)}}">{{$category->name}}</a>
-
+                                @if ($category->children->count() > 0)
+                                <ul class="sub-menu">
+                                    @foreach ($category->children as $item)
+									<li><a href="{{route('category.product',$item->slug)}}">{{$item->name}}</a></li>
+                                    @endforeach
+								</ul>
+                                @endif
                             </li>
                             @endforeach
 
-
-						<li  style="background: #ea4a76; color:#fff;" > <!-- class="label1" data-label1="hot" -->
+                                     <!-- class="label1" data-label1="hot" -->
+					<!--	<li  style="background: #ea4a76; color:#fff;" >
 								<a  style=" color:#fff;" href="shoping-cart.html">ملابس أطفال بنات</a>
 							</li>
 
@@ -115,7 +121,7 @@
 
 							<li style="background: #ff9b04;">
 								<a style=" color:#fff;" href="contact.html">العاب</a>
-							</li> 
+							</li>-->
 						</ul>
 					</div>
 
@@ -383,7 +389,7 @@
 					<ul>
 						<li class="p-b-10">
 							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Track Order
+								سياسة الشحن والارجاع
 							</a>
 						</li>
 
@@ -562,6 +568,44 @@
 	</script>
 <!--===============================================================================================-->
 	<script src="{{asset('front/js/main.js')}}"></script>
+    <script>
+
+
+        $(document).ready(function() {
+            var product_id;
+
+            $('.wishlist').click(function(e) {
+                e.preventDefault();
+                var product_id = $(".product_id").val();
+                console.log(product_id);
+
+                $(this).siblings().each(function(){
+                    if($(this).hasClass("product_id")){
+                        product_id = $(this).val();
+                        console.log(product_id);
+                    }
+
+
+                });
+            //	alert("comment_id: " +comment_id+ " body: " +body);
+            $.ajax({
+            url: '/add-wishlist',
+            type:"POST",
+            data:{
+                "_token": "{{ csrf_token() }}",
+                product_id:product_id
+            },
+            success:function(data){
+                console.log(data);
+                            console.log(data.count);
+
+                            $('.wishlist_count').attr('data-notify',data.count);
+            },
+            });
+            });
+
+        });
+</script>
 @stack('js')
 </body>
 </html>

@@ -31,7 +31,9 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
+        if (Auth::user()->type == 'delivery') {
+            return redirect()->route('Delivery.incoming');
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

@@ -13,10 +13,13 @@
                     </div>
                 @endif
 
+                    @can('create', App\Models\Product::class)
                 <div class="table-toolbar mb-3">
                     <a href="{{ route('admin.products.create') }}" class="btn  btn-info"> إضافة منتج <i
                             class="fas fa-plus"></i></a>
-                </div>               
+                </div> 
+                @endcan
+              
                  <div class="box-body">
 
                     <form action="{{ URL::current() }}" method="get" class="d-flex">
@@ -64,8 +67,13 @@
                                     <th>{{ $product->created_at }}</th>
 
                                     <th>
+                                        @can('update', $product)
+
                                         <a href="{{ route('admin.products.edit', $product->id) }}"
                                             class="btn btn-sm btn-outline-primary"><i class="far fa-edit"></i></a>
+                                        @endcan
+                                        @can('delete', $product)
+
                                         <form class="d-inline"
                                             action="{{ route('admin.products.destroy', $product->id) }}"
                                             method="post">
@@ -74,6 +82,7 @@
                                             <button type="submit" class="btn btn-sm btn-outline-danger"><i
                                                     class="far fa-trash-alt "></i></button>
                                         </form>
+                                        @endcan
                                     </th>
                                 </tr>
                             @endforeach

@@ -23,6 +23,7 @@ class DeliveryAgentsController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', DeliveryAgents::class); 
 
         $users = DB::table('delivery_agents')
             ->join('users', 'users.id', '=', 'delivery_agents.user_id')
@@ -43,6 +44,8 @@ class DeliveryAgentsController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', DeliveryAgents::class); 
+
         return view('dashboard.deliveryAgents.create');
     }
 
@@ -54,6 +57,10 @@ class DeliveryAgentsController extends Controller
      */
     public function store(Request $request)
     {
+
+        $this->authorize('create', DeliveryAgents::class); 
+
+
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100', 'unique:users'],
             'image' => 'image',
@@ -149,6 +156,7 @@ class DeliveryAgentsController extends Controller
             ->select('delivery_agents.*','name','email','mobile','image','type')
             ->where('delivery_agents.id',$id)
             ->first();
+            $this->authorize('update', $user); 
 
         return view('dashboard.deliveryAgents.edit', [
             'user' => $user,
@@ -170,6 +178,7 @@ class DeliveryAgentsController extends Controller
             ->where('delivery_agents.id',$id)
             ->first();
         $user_id=$user->user_id;
+        $this->authorize('update', $user); 
 
         if (empty($request->password) || is_null($request->password)){
             $validate = [
@@ -251,6 +260,7 @@ class DeliveryAgentsController extends Controller
 
         $deliveryAgents = DeliveryAgents::findOrFail($id);
         $user_id=$deliveryAgents->user_id;
+        $this->authorize('update', $deliveryAgents); 
 
         $user=User::findOrFail($user_id);
 

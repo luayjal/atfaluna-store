@@ -48,7 +48,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">عرض الموقع</a>
+        <a href="{{route('home')}}" class="nav-link">عرض الموقع</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
@@ -173,7 +173,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{{route('home')}}" class="brand-link">
       <img src="/dashboard/img/child-logo.jpg" alt="AdminLTE Logo" class="brand-image  elevation-3"> <!-- img-circle -->
       <span class="brand-text font-weight-light">متجر أطفالنا</span>
     </a>
@@ -186,7 +186,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <img src="/dashboard/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Luay Jal</a>
+          <a href="#" class="d-block">{{Auth::user()->name}}</a>
         </div>
       </div>
 
@@ -195,7 +195,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview "> {{-- menu-open --}}
+               @can('viewAny', App\Models\User::class)
+                <li class="nav-item has-treeview "> {{-- menu-open --}}
+                    <a href="#" class="nav-link @if(request()->routeIs('admin.users.*')) active @endif">
+                        <i  class="nav-icon fas fa-users"></i>
+                    <p>
+                        المستخدمين
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        @can('viewAny', App\Models\User::class)
+                    <li class="nav-item">
+                        <a href="{{route('admin.users.index')}}" class="nav-link @if(request()->routeIs('admin.users.index')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>عرض المستخدمين</p>
+                        </a>
+                    </li>
+                    @endcan
+                    @can('create', App\Models\User::class)
+                    <li class="nav-item">
+                        <a href="{{route('admin.users.create')}}" class="nav-link @if(request()->routeIs('admin.register')) active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>إضافة مستخدم</p>
+                        </a>
+                    </li>
+                    @endcan
+                    </ul>
+                </li>
+              @endcan
+               @can('viewAny', App\Models\Category::class)
+
+               <li class="nav-item has-treeview "> {{-- menu-open --}}
             <a href="#" class="nav-link @if(request()->routeIs('admin.categories.*')) active @endif">
               <i class="nav-icon fas fa-network-wired"></i>
               <p>
@@ -204,12 +235,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
             <ul class="nav nav-treeview">
+              @can('viewAny', App\Models\Category::class)
+
               <li class="nav-item">
                 <a href="{{route('admin.categories.index')}}" class="nav-link @if(request()->routeIs('admin.categories.index')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>عرض الأقسام</p>
                 </a>
               </li>
+              @endcan
+              @can('create', App\Models\Category::class)
+
               <li class="nav-item">
                 <a href="{{route('admin.categories.create')}}" class="nav-link @if(request()->routeIs('admin.categories.create')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
@@ -222,52 +258,75 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>الأقسام المحذوفة</p>
                 </a>
               </li>
+            @endcan
             </ul>
           </li>
+
+            @endcan
+
+          @can('viewany', App\Models\Product::class)
+
           <li class="nav-item has-treeview ">
             <a href="#" class="nav-link @if(request()->routeIs('admin.products.*')) active @endif">
-              <i class="nav-icon fas fa-tshirt"></i> 
+              <i class="nav-icon fas fa-tshirt"></i>
               <p>
                 المنتجات
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
+              @can('viewAny', App\Models\Product::class)
+
               <li class="nav-item">
                 <a href="{{route('admin.products.index')}}" class="nav-link @if(request()->routeIs('admin.products.index')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>عرض المنتجات</p>
                 </a>
               </li>
+              @endcan
+              @can('create', App\Models\Product::class)
+
               <li class="nav-item">
                 <a href="{{route('admin.products.create')}}" class="nav-link @if(request()->routeIs('admin.products.create')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>إضافة منتج</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="{{route('admin.products.trash')}}" class="nav-link @if(request()->routeIs('admin.products.trash')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>المنتجات المحذوفة</p>
                 </a>
               </li>
+              @endcan
             </ul>
           </li>
+          @endcan
+
+          @can('viewAny', App\Models\Coupon::class)
+
           <li class="nav-item has-treeview ">
             <a href="#" class="nav-link @if(request()->routeIs('admin.coupons.*')) active @endif">
-              <i class="nav-icon fas fa-percent"></i> 
+              <i class="nav-icon fas fa-percent"></i>
               <p>
                 الكوبون
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
+              @can('viewAny', App\Models\Coupon::class)
+
               <li class="nav-item">
                 <a href="{{route('admin.coupons.index')}}" class="nav-link @if(request()->routeIs('admin.coupons.index')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>عرض الكوبونات</p>
                 </a>
               </li>
+              @endcan
+
+              @can('create', App\Models\Coupon::class)
+
               <li class="nav-item">
                 <a href="{{route('admin.coupons.create')}}" class="nav-link @if(request()->routeIs('admin.coupons.create')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
@@ -280,8 +339,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>المنتجات المحذوفة</p>
                 </a>
               </li>
+              @endcan
             </ul>
           </li>
+          @endcan
+          @can('viewAny', App\Models\Message::class)
 
           <li class="nav-item">
             <a href="{{route('admin.messages')}}" class="nav-link">
@@ -291,7 +353,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
           </li>
+          @endcan
 
+          @can('viewAny', App\Models\DeliveryAgents::class)
 
           <li class="nav-item has-treeview ">
             <a href="#" class="nav-link @if(request()->routeIs('admin.delivery.*')) active @endif">
@@ -302,22 +366,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
             </a>
             <ul class="nav nav-treeview">
+              @can('viewAny', App\Models\DeliveryAgents::class)
+
                 <li class="nav-item">
                     <a href="{{route('admin.delivery.index')}}" class="nav-link @if(request()->routeIs('admin.delivery.index')) active @endif">
                         <i class="far fa-circle nav-icon"></i>
                         <p>عرض مناديب التوصيل</p>
                     </a>
                 </li>
+                @endcan
+                @can('create', App\Models\DeliveryAgents::class)
+
                 <li class="nav-item">
                     <a href="{{route('admin.delivery.create')}}" class="nav-link @if(request()->routeIs('admin.delivery.create')) active @endif">
                         <i class="far fa-circle nav-icon"></i>
                         <p>إضافة  مندوب توصيل</p>
                     </a>
                 </li>
-                
+                @endcan
             </ul>
         </li>
-
+    @endcan
+    @can('viewAny', App\Models\City::class)
         <li class="nav-item has-treeview ">
             <a href="#" class="nav-link @if(request()->routeIs('admin.city.*')) active @endif">
                 <i class="nav-icon fas fa-city"></i>
@@ -327,12 +397,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
             </a>
             <ul class="nav nav-treeview">
+              @can('viewAny', App\Models\City::class)
                 <li class="nav-item">
                     <a href="{{route('admin.city.index')}}" class="nav-link @if(request()->routeIs('admin.city.index')) active @endif">
                         <i class="far fa-circle nav-icon"></i>
                         <p>عرض المدن</p>
                     </a>
                 </li>
+                @endcan
+                @can('create', App\Models\City::class)
                 <li class="nav-item">
                     <a href="{{route('admin.city.create')}}" class="nav-link @if(request()->routeIs('admin.city.create')) active @endif">
                         <i class="far fa-circle nav-icon"></i>
@@ -345,10 +418,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <p> المدن المحذوفة</p>
                     </a>
                 </li>
+                @endcan
             </ul>
         </li>
-
-
+@endcan
+@can('viewAny', App\Models\Slider::class)
 
         <li class="nav-item has-treeview ">
           <a href="#" class="nav-link @if(request()->routeIs('admin.slider.*')) active @endif">
@@ -359,24 +433,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
           </a>
           <ul class="nav nav-treeview">
+            @can('viewAny', App\Models\Slider::class)
+
               <li class="nav-item">
                   <a href="{{route('admin.slider.index')}}" class="nav-link @if(request()->routeIs('admin.slider.index')) active @endif">
                       <i class="far fa-circle nav-icon"></i>
                       <p>عرض الاعلانات(السلايدر)</p>
                   </a>
               </li>
+              @endcan
+              @can('create', App\Models\Slider::class)
+
               <li class="nav-item">
                   <a href="{{route('admin.slider.create')}}" class="nav-link @if(request()->routeIs('admin.slider.create')) active @endif">
                       <i class="far fa-circle nav-icon"></i>
                       <p>إضافة اعلان (سلايدر)</p>
                   </a>
               </li>
-
+@endcan
           </ul>
       </li>
+@endcan
 
 
-      
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-envelope"></i>
@@ -404,9 +483,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <h3>{{$header}}</h3>
         </div>
       </div>
-      
+
        {{$slot}}
-      
+
     </div>
     <!-- /.content -->
   </div>
@@ -429,8 +508,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
      متجر أطفالنا
     </div>
     <!-- Default to the left -->
-  
-    <strong>جميع الحقوق محفوظة &copy; 2022</strong> 
+
+    <strong>جميع الحقوق محفوظة &copy; 2022</strong>
   </footer>
 </div>
 

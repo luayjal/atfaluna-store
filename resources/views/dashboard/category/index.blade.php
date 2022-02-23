@@ -14,8 +14,10 @@
             {{session('success')}}
           </div>
          @endif
-         
+
+         @can('create', App\Models\Category::class)
           <a class="btn btn-info mb-3" href="{{route('admin.categories.create')}}">اضافة قسم <i class="fas fa-plus"></i></a> 
+          @endcan
             <div class="box-body">
               <table  class="table table-bordered border-primary">
 
@@ -61,13 +63,19 @@
                             {{-- <td style="color: red">{{ $category->status==1 ? 'Active':'Inactive' }}</td> --}}
               
                          <td style="text-align: center; margin-top:20px">
+                          @can('create', $category)
+
                              <a href="{{route('admin.categories.edit',$category->id)}}"  class="btn btn-primary">تعديل <i class="far fa-edit"></i></a>
-              
+                             @endcan
+
+                             @can('delete', $category)
+
                             <form class="d-inline" action="{{route('admin.categories.destroy',$category->id)}}" method="post">
                               @csrf
                               @method('delete')
                               <button class="btn btn-danger"><span style="color: white"> حذف <i class="fas fa-trash"></i> </span> </button>
                             </form>
+                            @endcan
                         </td>
                         
                       </tr>

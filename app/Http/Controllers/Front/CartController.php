@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Front;
 
 use App\Models\Cart;
+use App\Models\City;
 use App\Models\Product;
+use App\Models\Variant;
 use Illuminate\Http\Request;
+use App\Models\Variant_Option;
 use App\Http\Controllers\Controller;
+use App\Rules\QuantityValidate;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
@@ -13,6 +17,7 @@ class CartController extends Controller
 
     public function index()
     {
+        $cities = City::get();
         $cart_id = cart_id();
         $carts = Cart::where([
             'cart_id' => $cart_id,
@@ -20,58 +25,90 @@ class CartController extends Controller
         $totalPrice = $carts->sum(function($item)
         {
             return $item->product->price * $item->quantity;
-        });      
-        
-        return view('front.cart',['carts'=>$carts,'totalPrice'=>$totalPrice]);
+        });
+
+        return view('front.cart',['carts'=>$carts,'totalPrice'=>$totalPrice,'cities'=>$cities]);
     }
 
 
-    
+
     public function store(Request $request)
     {
 
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'int|min:1',
-        ]);
-
         $cart_id = cart_id();
         $product = Product::findOrFail($request->post('product_id'));
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'color'=>'required',
+            'size'=>'required',
+        ],[
+            'color.required'=>'حدث خطأ! الرجاء اختيار اللون',
+            'size.required'=>'حدث خطأ! الرجاء اختيار المقاس',
+        ]);
+
+
+        $variant = Variant::where('product_id', $product->id)
+          ->whereRaw('id in (select variants_id from variant__options where value = ?)', [$request->post('color')]) //color
+          ->whereRaw('id in (select variants_id from variant__options where value = ?)', [$size = $request->post('size')]) //size
+          ->first();
+
+          // return response()->json($variant);
+
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'color'=>'required',
+            'size'=>'required',
+            'quantity' => ['int','min:1',new QuantityValidate($variant)],
+
+        ],[
+            'quantity.integer' => 'حدث خطأ! الرجاء ادخال كمية صحيحة',
+            'quantity.min' => 'حدث خطأ! يجب أن تكون الكمية أكبر من صفر',
+
+        ]);
+
+
+
         $product_id = $request->post('product_id');
+        $color = $request->post('color');
+        $size = $request->post('size');
         $quantity = $request->post('quantity', 1);
-        $color_id = $request->post('color_id');
-        $size_id = $request->post('size_id');
+        $variant_id  = $variant->id;
+
+
 
         $cart = Cart::where([
+            'color' => $color,
+            'size'=>$size,
             'cart_id' => $cart_id,
             'product_id' =>  $product_id,
-            'color_id' => $color_id,
-            'size_id'=> $size_id
+            'variant_id' => $variant_id,
         ])->first();
 
         if ($cart) {
             $cart->increment('quantity', $quantity);
         } else {
             $cart = Cart::create([
-                'user_id' => Auth::id(),
                 'cart_id' => $cart_id,
                 'product_id' => $request->post('product_id'),
                 'quantity' => $request->post('quantity', 1),
-                'color_id' => $color_id,
-                'size_id'=> $size_id
+                'color' => $color,
+                'size' =>$size,
+                'variant_id' => $variant_id,
             ]);
 
         }
         $carts = Cart::where([
             'cart_id' => cart_id(),
         ])->get();
+
         $totalPrice = $carts->sum(function($item)
         {
             return $item->product->price * $item->quantity;
-        }); 
+        });
+
         $data = [
             'cart' =>$cart,
-            'count' => $cart->count(),
+            'count' => $carts->count(),
             'product' => $product,
             'totalPrice'=>$totalPrice
 
@@ -84,16 +121,16 @@ class CartController extends Controller
             $cart =  Cart::with('product')->where('product_id',$request->id)->where('cart_id', cart_id())->first();
             $cart->quantity=$request->quantity;
             $cart->save();
-            
+
             $carts = Cart::where([
                 'cart_id' => cart_id(),
             ])->get();
             $totalPrice = $carts->sum(function($item)
             {
                 return $item->product->price * $item->quantity;
-            }); 
-            
+            });
+
             return response()->json(['cart'=>$cart,'totalPrice'=>$totalPrice]);
         }
-        
+
 }

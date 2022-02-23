@@ -24,6 +24,7 @@ class User extends Authenticatable
         'image',
         'password',
         'type',
+        'roles',
     ];
 
     /**
@@ -43,5 +44,23 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'roles'=>'array'
+
     ];
+
+
+
+
+    public function hasAbility($ability)
+    {
+        if ($this->roles) {
+
+
+                if (in_array($ability,$this->roles)) {
+                    return true;
+                }
+            }
+
+        return false;
+    }
 }

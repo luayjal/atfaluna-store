@@ -12,8 +12,10 @@
             {{session('success')}}
           </div>
          @endif
+         @can('create', App\Models\Slider::class)
 
           <a class="btn btn-info mb-3" href="{{route('admin.slider.create')}}">اضافة سلايدر <i class="fas fa-plus"></i></a>
+          @endcan
             <div class="box-body">
               <table  class="table table-bordered border-primary">
 
@@ -51,13 +53,18 @@
                           </td>
 
                          <td style="text-align: center; margin-top:20px">
+                          @can('update', $slider)
+
                              <a href="{{route('admin.slider.edit',$slider->id)}}"  class="btn btn-primary">تعديل <i class="far fa-edit"></i></a>
+                           @endcan
+                             @can('delete', $slider)
 
                             <form class="d-inline" action="{{route('admin.slider.destroy',$slider->id)}}" method="post">
                               @csrf
                               @method('delete')
                               <button class="btn btn-danger"><span style="color: white"> حذف <i class="fas fa-trash"></i> </span> </button>
                             </form>
+                            @endcan
                         </td>
 
                       </tr>

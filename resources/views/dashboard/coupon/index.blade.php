@@ -7,10 +7,11 @@
                 </div>
             @endif
             <div class="card-body">
+                @can('create', App\Models\Coupon::class)
 
                 <a style="margin-bottom:15px;" href="{{ route('admin.coupons.create') }}" class="btn btn-info ">
                    إضافة كوبون <i class="fas fa-plus"></i></a> 
-
+                    @endcan
 
                 <table class="table table-bordered border-primary text-center">
 
@@ -60,9 +61,12 @@
 
                                 </td>
                                 <td class="table-action">
+                                    @can('update',$coupon)
+
                                     <a href="{{ route('admin.coupons.edit', $coupon->id) }}" class="btn btn-primary">تعديل
                                         <i class="far fa-edit"></i></a>
-
+                                        @endcan
+                                        @can('delete',$coupon)
                                     <form class="d-inline"
                                         action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="post">
                                         @csrf
@@ -70,7 +74,7 @@
                                         <button class="btn btn-danger"><span style="color: white"> حذف <i
                                                     class="fas fa-trash"></i> </span> </button>
                                     </form>
-
+                                    @endcan
                                 </td>
 
                             </tr>

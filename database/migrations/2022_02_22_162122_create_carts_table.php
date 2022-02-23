@@ -19,8 +19,9 @@ class CreateCartsTable extends Migration
             $table->string('cart_id');
             $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
-            $table->foreignId('color_id')->constrained('colors')->cascadeOnDelete();
-            $table->foreignId('size_id')->constrained('sizes')->cascadeOnDelete();
+            $table->foreignId('variant_id')->constrained('variants')->cascadeOnDelete();
+            $table->foreignId('color');
+            $table->foreignId('size');
             $table->smallInteger('quantity');
             $table->timestamps();
         });

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model
 {
     use HasFactory;
-    protected $fillable = ['cart_id','user_id','product_id','color_id','size_id','quantity'];
+    protected $fillable = ['cart_id','user_id','product_id','variant_id','color','size','quantity'];
 
     /**
      * Get the product that owns the Cart

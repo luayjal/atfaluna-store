@@ -17,6 +17,8 @@ class CityController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', city::class); 
+
         $cities = city::latest()->paginate();
 
         return view('dashboard.city.index',[
@@ -26,6 +28,8 @@ class CityController extends Controller
 
     public function trashCity()
     {
+        $this->authorize('create', city::class); 
+
         $cities = city::onlyTrashed()->latest()->paginate();
 
         return view('dashboard.city.trash',[
@@ -40,6 +44,8 @@ class CityController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', city::class); 
+
         $categories = city::all();
         return view('dashboard.city.create',[
             'categories' => $categories,
@@ -54,6 +60,8 @@ class CityController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', city::class); 
+
         $request->validate([
             'name'=>'required|min:3|max:100|unique:categories,name',
             'image' =>'image',
@@ -93,6 +101,7 @@ class CityController extends Controller
     public function edit($id)
     {
         $city = city::findOrFail($id);
+        $this->authorize('update', $city); 
 
         return view('dashboard.city.edit',[
             'city' => $city,
@@ -109,6 +118,8 @@ class CityController extends Controller
     public function update(Request $request, $id)
     {
         $city = city::findOrFail($id);
+        $this->authorize('update', $city); 
+
         $request->merge([
             'slug' => Str::slug_ar($request->name),
           ]);
@@ -136,6 +147,7 @@ class CityController extends Controller
     public function destroy($id)
     {
        $city = city::withTrashed()->findOrFail($id);
+       $this->authorize('delete', $city); 
 
        if ($city->trashed()) {
         $city->restore();
