@@ -14,7 +14,7 @@
             var itemSlick1 = $(slick1).find('.item-slick1');
             var layerSlick1 = $(slick1).find('.layer-slick1');
             var actionSlick1 = [];
-            
+
 
             $(slick1).on('init', function(){
                 var layerCurrentItem = $(itemSlick1[0]).find('.layer-slick1');
@@ -30,8 +30,8 @@
                 for(var i=0; i<layerCurrentItem.length; i++) {
                     actionSlick1[i] = setTimeout(function(index) {
                         $(layerCurrentItem[index]).addClass($(layerCurrentItem[index]).data('appear') + ' visible-true');
-                    },$(layerCurrentItem[i]).data('delay'),i); 
-                }        
+                    },$(layerCurrentItem[i]).data('delay'),i);
+                }
             });
 
 
@@ -66,7 +66,7 @@
                 },
             });
 
-            $(slick1).on('afterChange', function(event, slick, currentSlide){ 
+            $(slick1).on('afterChange', function(event, slick, currentSlide){
 
                 var layerCurrentItem = $(itemSlick1[currentSlide]).find('.layer-slick1');
 
@@ -81,9 +81,9 @@
                 for(var i=0; i<layerCurrentItem.length; i++) {
                     actionSlick1[i] = setTimeout(function(index) {
                         $(layerCurrentItem[index]).addClass($(layerCurrentItem[index]).data('appear') + ' visible-true');
-                    },$(layerCurrentItem[i]).data('delay'),i); 
+                    },$(layerCurrentItem[i]).data('delay'),i);
                 }
-                         
+
             });
 
         });
@@ -101,7 +101,7 @@
               arrows: true,
               appendArrows: $(this),
               prevArrow:'<button class="arrow-slick2 prev-slick2"><i class="fa fa-angle-left" aria-hidden="true"></i></button>',
-              nextArrow:'<button class="arrow-slick2 next-slick2"><i class="fa fa-angle-right" aria-hidden="true"></i></button>',  
+              nextArrow:'<button class="arrow-slick2 next-slick2"><i class="fa fa-angle-right" aria-hidden="true"></i></button>',
               responsive: [
                 {
                   breakpoint: 1200,
@@ -131,16 +131,16 @@
                     slidesToScroll: 1
                   }
                 }
-              ]    
+              ]
             });
           });
 
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-          var nameTab = $(e.target).attr('href'); 
-          $(nameTab).find('.slick2').slick('reinit');          
-        });      
-        
+          var nameTab = $(e.target).attr('href');
+          $(nameTab).find('.slick2').slick('reinit');
+        });
+
         /*==================================================================
         [ Slick3 ]*/
         $('.wrap-slick3').each(function(){
@@ -153,7 +153,7 @@
                 autoplay: false,
                 autoplaySpeed: 6000,
 
-                arrows: true,
+                arrows: false,
                 appendArrows: $(this).find('.wrap-slick3-arrows'),
                 prevArrow:'<button class="arrow-slick3 prev-slick3"><i class="fa fa-angle-left" aria-hidden="true"></i></button>',
                 nextArrow:'<button class="arrow-slick3 next-slick3"><i class="fa fa-angle-right" aria-hidden="true"></i></button>',
@@ -164,10 +164,10 @@
                 customPaging: function(slick, index) {
                     var portrait = $(slick.$slides[index]).data('thumb');
                     return '<img src=" ' + portrait + ' "/><div class="slick3-dot-overlay"></div>';
-                },  
+                },
             });
         });
-            
-                
+
+
 
 })(jQuery);

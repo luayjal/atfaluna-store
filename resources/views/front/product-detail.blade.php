@@ -27,7 +27,6 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-6 col-lg-7 p-b-30">
-
 					<div class="p-l-25 p-r-30 p-lr-0-lg">
 						<div class="wrap-slick3 flex-sb flex-w">
 							<div class="wrap-slick3-dots"></div>
@@ -68,18 +67,8 @@
 						<span class="mtext-106 cl2">
 						{{$product->price}} ر.س
 						</span>
-                        <div class=" product-desc">
-						<p class="stext-102 cl3 p-t-23">
-							<h5>الوصف</h5>
-                            {!!$product->description!!}
-						</p>
-                    </div>
-						<!--  -->
-                        <form id="form_cart">
-						<div class="p-t-33">
-                            <input  type="hidden" name="product_id" value="{{$product->id}}">
-                            @csrf
-							<div class="flex-w flex-r-m p-b-10">
+
+							<div class="flex-w flex-r-m p-b-10 mt-3">
 								<div class="size-203 flex-c-m respon6">
 									اللون
 								</div>
@@ -124,16 +113,37 @@
 								</div>
 							</div>
 
+                    <div class=" product-desc">
+						<p class="stext-102 cl3 p-t-23">
+							<h5>الوصف</h5>
+                            {!!$product->description!!}
+						</p>
+                        </div>
+						<!--  -->
+                        <form id="form_cart">
+						<div class="p-t-33">
+                            <input  type="hidden" name="product_id" value="{{$product->id}}">
+                            @csrf
 
                             <div class="alert alert-danger d-none msg-error">
                                 <ul>
-                                    
+
                                 </ul>
                             </div>
 
+
+
 							<p class="stext-102 cl3 p-t-23">
-								<h5>تفاصيل المقاس</h5>
-								الكم طوله 20 سانتي والطول 35 سانتي والعرض 25 سانتي
+								<h5 class="mb-2">تفاصيل المقاس</h5>
+								 @if ($product->image_disc)
+                               <div class="image_disc_zoom">
+
+                                    <img src="{{$product->image_disc}}" alt="" class="img-fluid ">
+                                </div>
+
+                                @else
+                                    {{$product->description_size}}
+                                @endif
 							</p>
 							<div class="flex-w flex-r-m p-b-10">
 								<div class="size-204 flex-w flex-m respon6-next">
@@ -157,28 +167,8 @@
 							</div>
 						</div>
                       </form>
-						<!--  -->
-						<div class="flex-w flex-m p-r-100 p-t-40 respon7">
-							<div class="wishlist flex-m bor20 p-l-10 m-l-11">
-                                @csrf
-                                <input type="hidden" class="product_id" value="{{$product->id}}">
-								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100" data-tooltip="Add to Wishlist">
-									<i class="zmdi zmdi-favorite"></i>
-								</a>
-							</div>
 
-							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Facebook">
-								<i class="fa fa-facebook"></i>
-							</a>
 
-							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Twitter">
-								<i class="fa fa-twitter"></i>
-							</a>
-
-							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Google Plus">
-								<i class="fa fa-google-plus"></i>
-							</a>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -213,7 +203,7 @@
 										<!-- Review -->
 										<div class="flex-w flex-t p-b-68">
 											<div class="wrap-pic-s size-109 bor0 of-hidden m-l-18 m-t-6">
-												<img src="images/avatar-02.jpg" alt="AVATAR">
+												<img src="/front/images/avatar-02.jpg" alt="AVATAR">
 											</div>
 
 											<div class="size-207">
@@ -367,7 +357,12 @@
 	@push('js')
      <script src="{{asset('front/js/jquery.zoom.js')}}"></script>
      <script>
-         $('.img-zoom').zoom();
+            $('.img-zoom').zoom({
+            magnify: 1
+         });
+         $('.image_disc_zoom').zoom({
+            magnify: 1.6
+         });
      </script>
     <script>
         $(document).ready(function() {

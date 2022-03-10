@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\Variant_Option;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Models\ProductImage;
 use Illuminate\Support\Facades\Storage;
 
 class ProductsController extends Controller
@@ -22,11 +23,21 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Product::class);
 
-        $products = Product::latest()->paginate();
+
+        $products = Product::when($request->name, function($query, $value) {
+            $query->where(function($query) use ($value) {
+                $query->where('products.name', 'LIKE', "%{$value}%");
+
+            });
+        })
+        ->when($request->parent_id, function($query, $value) {
+            $query->where('products.category_id', '=', $value);
+        })
+        ->latest()->paginate();
         $categories = Category::all();
         return view('dashboard.products.index',[
             'products' => $products,
@@ -59,6 +70,12 @@ class ProductsController extends Controller
         return view('dashboard.products.create',[
             'categories' => $categories,
             'product' => new Product(),
+            'sizes'=>false,
+            'colors'=>false,
+            'code_variant' => false,
+            'price_variant'=>false,
+            'quantity_variant'=>false,
+            'id_variant'=>false,
         ]);
     }
 
@@ -105,6 +122,13 @@ class ProductsController extends Controller
           if($request->hasFile('certificate')) {
             $certificate = $request->file('certificate');
             $data['certificate']= $certificate->store('/images',['disk' => 'uploads']);
+            }
+
+            //img disc
+
+          if($request->hasFile('img_description_size')) {
+            $img_disc = $request->file('img_description_size');
+            $data['img_description_size']= $img_disc->store('/images',['disk' => 'uploads']);
             }
 
         $colors = json_decode($request->colors) ;
@@ -177,6 +201,11 @@ class ProductsController extends Controller
 
         $variants = Variant::where('product_id', $product->id)->get();
 
+       $id_variant = $variants->pluck('id');
+       $code_variant = $variants->pluck('code_variant');
+       $price_variant = $variants->pluck('price_variant');
+       $quantity_variant = $variants->pluck('quantity_variant');
+
         $sizes = Variant_Option::whereRaw('variants_id in (select id from variants where product_id = ?)', [$product->id])
             ->where('option', 'size')->distinct()->select('value')
             ->pluck('value');
@@ -198,6 +227,10 @@ class ProductsController extends Controller
             'categories'=>$categories,
             'sizes'=>$sizes,
             'colors'=>$colors,
+            'code_variant' => $code_variant,
+            'price_variant'=>$price_variant,
+            'quantity_variant'=>$quantity_variant,
+            'id_variant'=>$id_variant,
         ]);
     }
 
@@ -215,7 +248,7 @@ class ProductsController extends Controller
 
         $request->validate([
             'name'=>['required','max:100',Rule::unique('products')->ignore($product->id)],
-            'image' =>'required|image',
+            'image' =>'image',
             'code'=>'required',
             'price' => 'required',
             'quantity'=>'required',
@@ -244,7 +277,20 @@ class ProductsController extends Controller
             $prevImg = $product->image;
         }
 
+             //store certificate image
+             if($request->hasFile('certificate')) {
+                $certificate = $request->file('certificate');
+                $data['certificate']= $certificate->store('/images',['disk' => 'uploads']);
+                }
 
+                //img disc
+
+              if($request->hasFile('img_description_size')) {
+                $img_disc = $request->file('img_description_size');
+                $data['img_description_size']= $img_disc->store('/images',['disk' => 'uploads']);
+                }
+
+        return $data;
         $product->update($data);
         // update gallery
         if($request->hasFile('gallery')){
@@ -256,15 +302,34 @@ class ProductsController extends Controller
             }
        }
 
-        //store color
-        if($request->has('colors')){
+       $variant = $request->variant;
+       $product->variants()->delete();
+       foreach ($variant as $variantss) {
+            $variants = array(
+                'id'=>$variantss['id_variant'],
+               'product_id' => $product->id,
+               'code_variant' => $variantss['code_variant'],
+               'price_variant' => $variantss['price_variant'],
+               'quantity_variant' => $variantss['quantity_variant'],
 
-            $product->colors()->sync($this->getColorOrSize($request->colors,Color::class));
-        }
-       //store size
-       if ($request->has('sizes')) {
+           );
+          // return $variants;
 
-           $product->sizes()->sync($this->getColorOrSize($request->sizes,Size::class));
+
+           $variant_update = Variant::Create($variants);
+
+           $variant_options_size = array(
+               'variants_id' => $variant_update->id,
+               'option' => 'size',
+               'value' => $variantss['size'],
+           );
+           $variant_update->option()->where('option','size')->create($variant_options_size);
+           $variant_options_color = array(
+               'variants_id' => $variant_update->id,
+               'option' => 'color',
+               'value' => $variantss['color'],
+           );
+           $variant_update->option()->where('option','color')->create($variant_options_color);
        }
 
         if($prevImg){
@@ -312,25 +377,14 @@ class ProductsController extends Controller
 
     }
 
-    public function getColorOrSize($request,$model){
-        //dd($request);
-        $items = json_decode($request);
+    public function deleteImage($id){
+            $image = ProductImage::findOrFail($id);
+            if($image->image_path){
 
-        $items_id = [];
-        if (is_array($items) && count($items) > 0) {
-            foreach ($items as $item) {
-
-                $model_id = $model::UpdateOrCreate([
-                    'name' => $item->value
-                ],
-                 [
-                     'name' => $item->value,
-                 ]);
-               $items_id[]=$model_id->id;
-             }
-
-             return $items_id;
-        }
+                Storage::disk('uploads')->delete($image->image_path);
+                $image->delete();
+                return response()->json('success',200);
+            }
 
     }
 }

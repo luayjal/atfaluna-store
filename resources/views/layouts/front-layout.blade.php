@@ -56,13 +56,13 @@
 							تواصل معنا
 						</a>
 
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
+						<a href="/#about_us" class="flex-c-m trans-04 p-lr-25">
 							 من نحن
 						</a>
 
-						{{-- <a href="{{route('login')}}" class="flex-c-m trans-04 p-lr-25">
-							تسجيل الدخول
-						</a> --}}
+						<a href="{{route('return.policy')}}" class="flex-c-m trans-04 p-lr-25">
+                            سياسة الاسترجاع والاستبدال
+						</a>
 
 						{{-- <a href="#" class="flex-c-m trans-04 p-lr-25">
 							EN
@@ -134,12 +134,9 @@
 						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="{{$cart->count()}}">
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</div>
-						@php
-							$wishlist = App\Models\Wishlist::where('wishlist_id',wishlist_id())->get();
-							$count = $wishlist->count();
-						@endphp
-						<a href="{{route('wishlist')}}" class="wishlist_count icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="{{$count}}">
-							<i class="zmdi zmdi-favorite-outline"></i>
+
+						<a href="{{route('store.reviews')}}" class="btn btn-outline-warning   cl2 hov-cl1 trans-04 p-l-22 p-r-11 " >
+							تقييم المتجر
 						</a>
 					</div>
 				</nav>
@@ -150,7 +147,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->
 			<div class="logo-mobile">
-				<a href="index.html"><img src="{{asset('front/images/child-logo.png')}}" alt="IMG-LOGO"></a>
+				<a href="/"><img src="{{asset('front/images/child-logo.png')}}" alt="IMG-LOGO"></a>
 			</div>
 
 			<!-- Icon header -->
@@ -166,8 +163,8 @@
 						<i class="zmdi zmdi-shopping-cart"></i>
 					</div>
 				</div>
-                <a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
-                    <i class="zmdi zmdi-favorite-outline"></i>
+                <a href="{{route('store.reviews')}}" class="btn btn-outline-warning   cl2 hov-cl1 trans-04 p-l-22 p-r-11 " >
+                    تقييم المتجر
                 </a>
 			</div>
 
@@ -199,51 +196,30 @@
 							 من نحن
 						</a>
 
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
-							تسجيل الدخول
-						</a>
-						{{-- <a href="#" class="flex-c-m p-lr-10 trans-04">
-							EN
-						</a>
 
-						<a href="#" class="flex-c-m p-lr-10 trans-04">
-							USD
-						</a> --}}
+
 					</div>
 				</li>
 			</ul>
 			<ul class="main-menu-m">
 				<li>
-					<a href="index.html">الرئيسية</a>
-					<ul class="sub-menu-m">
-						<li><a href="index.html">Homepage 1</a></li>
-						<li><a href="home-02.html">Homepage 2</a></li>
-						<li><a href="home-03.html">Homepage 3</a></li>
-					</ul>
-					<span class="arrow-main-menu-m">
-						<i class="fa fa-angle-right" aria-hidden="true"></i>
-					</span>
+					<a href="{{route('home')}}">الرئيسية</a>
+
 				</li>
-
-				<li style="background: #5dcbfc; color:#fff;">
-                    <a  style="color:#fff;" href="product.html">ملابس أطفال أولاد</a>
+                @foreach ($categories as $category)
+                <li style="background: {{$category->background_color}}; ">
+                    <a  style="color:{{$category->font_color}};" href="{{route('category.product',$category->slug)}}">{{$category->name}}</a>
+                    @if ($category->children->count() > 0)
+                    <ul class="sub-menu">
+                        @foreach ($category->children as $item)
+                        <li><a href="{{route('category.product',$item->slug)}}">{{$item->name}}</a></li>
+                        @endforeach
+                    </ul>
+                    @endif
                 </li>
+                @endforeach
 
-                <li  style="background: #ea4a76; color:#fff;" > <!-- class="label1" data-label1="hot" -->
-                    <a  style=" color:#fff;" href="shoping-cart.html">ملابس أطفال بنات</a>
-                </li>
 
-                <li>
-                    <a href="blog.html">مواليد</a>
-                </li>
-
-                <li style="background: #717fe0;">
-                    <a  style=" color:#fff;" href="about.html">جزم واكسساورات</a>
-                </li>
-
-                <li style="background: #ff9b04;">
-                    <a style=" color:#fff;" href="contact.html">العاب</a>
-                </li>
 			</ul>
 		</div>
 
@@ -341,154 +317,119 @@
     {{$slot}}
 
 	<!-- Footer -->
-	<footer class="bg3 p-t-75 p-b-32">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						الأقسام
-					</h4>
+    <footer class="bg3 p-t-75 p-b-32">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-lg-4 p-b-50">
+                    <h4 class="stext-301 cl0 p-b-30">
+                        الأقسام
+                    </h4>
 
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								ملابس أطفال أولاد
-							</a>
-						</li>
+                    <ul>
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								ملابس أطفال بنات
-							</a>
-						</li>
+                        @foreach ($categories as $category)
+                            <li class="p-b-10" style="background: {{$category->background_color}};margin-top: 5px ">
+                                <a class="stext-107 cl7 hov-cl1 trans-04"
+                                   style="color:{{$category->font_color}};"
+                                   href="{{route('category.product',$category->slug)}}">{{$category->name}}</a>
+                                @if ($category->children->count() > 0)
+                                    <ul class="sub-menu">
+                                        @foreach ($category->children as $item)
+                                            <li><a href="{{route('category.product',$item->slug)}}">{{$item->name}}</a></li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </li>
+                        @endforeach
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								مواليد
-							</a>
-						</li>
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								جزم وإكسسوارات
-							</a>
-						</li>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								ألعاب
-							</a>
-						</li>
-					</ul>
-				</div>
+                    </ul>
+                </div>
 
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						الدعم
-					</h4>
+                <div class="col-sm-6 col-lg-4 p-b-50 text-center">
+                    <h4 class="stext-301 cl0 p-b-30">
+                        مناديب التوصيل
+                    </h4>
 
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								سياسة الشحن والارجاع
-							</a>
-						</li>
+                    <ul class="justify-content-around row">
+                        @foreach($deliverys as $delivery)
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Returns
-							</a>
-						</li>
+                            <li class="p-b-10 col-6">
+                                <span href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                    {{$delivery->name}}
+                                </span>
+                            </li>
+                            <li class="p-b-10  cl11 col-6">
+                                @for($i=1;$i<=5;++$i)
+                                    @if($delivery->sum >=$i)
+                                        <i class="zmdi zmdi-star"></i>
+                                    @else
+                                        <i class="zmdi zmdi-star-outline"></i>
+                                    @endif
+                                @endfor
+                            </li>
+                        @endforeach
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shipping
-							</a>
-						</li>
+                    </ul>
+                </div>
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								FAQs
-							</a>
-						</li>
-					</ul>
-				</div>
 
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						GET IN TOUCH
-					</h4>
 
-					<p class="stext-107 cl7 size-201">
-						Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
-					</p>
+                <div class="col-sm-6 col-lg-4 p-b-50">
+                    <h4 class="stext-301 cl0 p-b-30">
+                        اشترك معنا
+                    </h4>
 
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
+                    <form>
+                        <div class="wrap-input1 w-full p-b-4">
+                            <input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email"
+                                   placeholder="email@example.com">
+                            <div class="focus-input1 trans-04"></div>
+                        </div>
 
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
+                        <div class="p-t-18">
+                            <button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+                                Subscribe
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
-					</div>
-				</div>
+            <div class="p-t-40">
+                <div class="flex-c-m flex-w p-b-18">
+                    <a href="#" class="m-all-1">
+                        <img src="{{asset('front/images/icons/icon-pay-01.png')}}" alt="ICON-PAY">
+                    </a>
 
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						اشترك معنا
-					</h4>
+                    <a href="#" class="m-all-1">
+                        <img src="{{asset('front/images/icons/icon-pay-02.png')}}" alt="ICON-PAY">
+                    </a>
 
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
-							<div class="focus-input1 trans-04"></div>
-						</div>
+                    <a href="#" class="m-all-1">
+                        <img src="{{asset('front/images/icons/icon-pay-03.png')}}" alt="ICON-PAY">
+                    </a>
 
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
+                    <a href="#" class="m-all-1">
+                        <img src="{{asset('front/images/icons/icon-pay-04.png')}}" alt="ICON-PAY">
+                    </a>
 
-			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="{{asset('front/images/icons/icon-pay-01.png')}}" alt="ICON-PAY">
-					</a>
+                    <a href="#" class="m-all-1">
+                        <img src="{{asset('front/images/icons/icon-pay-05.png')}}" alt="ICON-PAY">
+                    </a>
+                </div>
 
-					<a href="#" class="m-all-1">
-						<img src="{{asset('front/images/icons/icon-pay-02.png')}}" alt="ICON-PAY">
-					</a>
+                <p class="stext-107 cl6 txt-center">
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    جميع الحقوق محفوظة &copy;
+                    <script>document.write(new Date().getFullYear());</script>
+                    <!-- All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> -->
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 
-					<a href="#" class="m-all-1">
-						<img src="{{asset('front/images/icons/icon-pay-03.png')}}" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="{{asset('front/images/icons/icon-pay-04.png')}}" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="{{asset('front/images/icons/icon-pay-05.png')}}" alt="ICON-PAY">
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-					<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-جميع الحقوق محفوظة &copy; <script>document.write(new Date().getFullYear());</script> <!-- All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> -->
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-
-				</p>
-			</div>
-		</div>
-	</footer>
+                </p>
+            </div>
+        </div>
+    </footer>
 
 
 	<!-- Back to top -->

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Variant_Option;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 
@@ -28,3 +29,16 @@ function wishlist_id(){
     return $id;
 
 };
+
+function color($variant_id)
+{
+    $colour = Variant_Option::where('variants_id', $variant_id)
+    ->where('option','color')->first();
+    return $colour->value;
+}
+function size($variant_id)
+{
+    $size = Variant_Option::where('variants_id', $variant_id)
+    ->where('option','size')->first();
+    return $size->value;
+}

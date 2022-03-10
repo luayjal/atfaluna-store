@@ -63,4 +63,9 @@ class User extends Authenticatable
 
         return false;
     }
+
+    public function routeNotificationForWhatsApp()
+    {
+    return $this->phone;
+    }
 }

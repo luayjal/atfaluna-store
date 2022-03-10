@@ -29,7 +29,7 @@
 <div class="form-group col-md-7 mb-3">
     <label for="">الوصف:</label>
     <textarea name="description" id="editor"
-        class="form-control col-7 @error('description') is-invalid @enderror" rows="20">{{ old('description', $product->description) }}  </textarea>
+        class="form-control col-7 @error('description') is-invalid @enderror"> {!! Request::old('description', $product->description) !!} </textarea>
     @error('description')
         <p class="invalid-feedback d-block">{{ $message }}</p>
     @enderror
@@ -44,6 +44,21 @@
     @enderror
 </div>
 
+<div class="form-group mb-3">
+    <label for="">صورة وصف  المقاس:</label>
+    <div><img src="{{ $product->image_disc }}" height="200" class="mb-3"></div>
+
+    <div class="input-group ">
+        <div class="custom-file col-7">
+            <input type="file" class="form-control" name="img_description_size" id="exampleInputFile">
+
+        </div>
+
+    </div>
+    @error('img_description_size')
+        <p class="invalid-feedback d-block">{{ $message }}</p>
+    @enderror
+</div>
 <div class="form-group mb-3">
     <label for="">الصورة الرئيسية:</label>
     <div><img src="{{ $product->image_url }}" height="200" class="mb-3"></div>
@@ -64,10 +79,9 @@
     <label for="">معرض الصور:</label>
     <div class="row">
         @foreach ($product->images as $image)
-            <div class="col-md-2 text-center">
-                <img src="{{ $image->image_url }}" id="imageId" alt="" height="80" class="img-fit m-1 border">
-                <button class="btn btn-sm btn-danger" id="deleteGallery"
-                    onclick="deleteImage('{{ $image->id }}')">Delete</button>
+            <div class="col-md-2 text-center position-relative">
+                <button type="button" class="btn btn-danger btn-sm deleteImage position-absolute rounded-circle" id="deleteGallery"><i class="fas fa-times-circle"></i></button>
+                <img src="{{ $image->image_url }}" id="imageId" imageId={{$image->id}} alt="" height="80" class="img-fit m-1 border">
 
             </div>
         @endforeach
@@ -91,7 +105,7 @@
     </div>
     <div class="input-group">
         <div class="custom-file col-7">
-            <input type="file" class="form-control" multiple name="certificate" id="exampleInputFile">
+            <input type="file" class="form-control"  name="certificate" id="exampleInputFile">
             <label class="" for="exampleInputFile"></label>
         </div>
 

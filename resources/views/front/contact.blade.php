@@ -6,14 +6,14 @@
 		<h2 class="ltext-105 cl0 txt-center">
 			تواصل معنا
 		</h2>
-	</section>	
-	@if (session('success')) 
+	</section>
+	@if (session('success'))
     <div class="alert alert-success px-4 py-3 leading-normal text-green-700 bg-green-100 rounded-lg" role="alert">
       <p class="font-bold">Success!</p>
       <p>    {{session('success')}}
       </p>
     </div>
-      
+
     @endif
 
 	<!-- Content page -->
@@ -69,8 +69,8 @@
 								رقم الهاتف
 							</span>
 
-							<p class="stext-115 cl1 size-213 p-t-18">
-								+1 800 1236879
+							<p class="stext-115 cl1 size-213 p-t-18" style="direction: ltr !important">
+								{{$iformations->mobile}}
 							</p>
 						</div>
 					</div>
@@ -86,16 +86,16 @@
 							</span>
 
 							<p class="stext-115 cl1 size-213 p-t-18">
-								contact@example.com
+								{{$iformations->email}}
 							</p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</section>	
-	
-	
+	</section>
+
+
 	<!-- Map -->
 	<div class="map">
 		<div class="size-303" id="google_map" data-map-x="40.691446" data-map-y="-73.886787" data-pin="images/child-logopng" data-scrollwhell="0" data-draggable="1" data-zoom="11"></div>

@@ -133,4 +133,11 @@ class CartController extends Controller
             return response()->json(['cart'=>$cart,'totalPrice'=>$totalPrice]);
         }
 
+        public function delete($id){
+            $cart =  Cart::where('product_id',$id)->where('cart_id', cart_id())->first();
+            $cart->delete();
+            return redirect()->back()->with('success','تم ازالة المنتج بنجاح');
+
+        }
+
 }

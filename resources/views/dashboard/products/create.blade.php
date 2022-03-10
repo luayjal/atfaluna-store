@@ -120,6 +120,8 @@ $(".tags").selectize({
 
                             var str = anyarr[i].toString().replace(',', ' / ')
                             // anyarr = null;
+
+
                             tag =
                                 "<tr>" +
                                 "<td>" + str + "</td>" +
@@ -129,7 +131,7 @@ $(".tags").selectize({
                                 "][price_variant]' placeholder ='السعر' value='' class='form-control ' ></td>" +
                                 "<td class='col-md-3 text-center'><input type='text'  name='variant[" + i +
                                 "][quantity_variant]' placeholder ='الكمية' value='' class='form-control ' ></td>" +
-                                "<td><input type='text' hidden name='variant[" + i +
+                                "<td><button class='btn btn-danger btn_delete '> <i class='fa fa-trash'></i> حذف</button> <input type='text' hidden name='variant[" + i +
                                 "][size]' id='price' placeholder ='كود المنتج' value='" + anyarr[i][0] +
                                 "' class='form-control price col-md-3' ></td>" +
                                 "<td><input type='text' hidden name='variant[" + i +
@@ -144,6 +146,11 @@ $(".tags").selectize({
                     console.log($("#tr").html());
                 }
             });
+        });
+    </script>
+    <script>
+        $(document).on('click', '.btn_delete', function () {
+            $(this).closest('tr').remove();
         });
     </script>
 @endpush

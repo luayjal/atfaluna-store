@@ -2,23 +2,31 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CityController;
-use App\Http\Controllers\Delivery\DeliveryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\RoleConttroller;
 use App\Http\Controllers\Admin\UserConttroller;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Front\CategoryController;
+use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\MessagesController;
 use App\Http\Controllers\Front\WishListController;
 use App\Http\Controllers\Admin\CategoriesController;
+use App\Http\Controllers\Admin\EvaluationController;
+use App\Http\Controllers\Delivery\DeliveryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Admin\DeliveryAgentsController;
+use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\MessagesController as AdminMessagesController;
+use App\Http\Controllers\Front\GiftController;
 use App\Http\Controllers\Front\ProductsController as FrontProductsController;
+use App\Http\Controllers\Front\StoreRiviewsController;
+use App\Models\Gift;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +52,8 @@ Route::get('/dashboard/home', function () {
 
 Route::prefix('dashboard')->middleware('auth','type-user:admin,super-admin')->as('admin.')->group(function(){
 
-
+    Route::get('orders',[OrderController::class,'index'])->name('orders');
+    Route::get('orders/details/{id}',[OrderController::class,'orderDetails'])->name('orders.details');
 
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store']);
@@ -53,6 +62,7 @@ Route::prefix('dashboard')->middleware('auth','type-user:admin,super-admin')->as
   Route::post('categories/restore/{id}',[CategoriesController::class,'restore'])->name('categories.restore');
   Route::get('products/products-trashed',[ProductsController::class,'trashProduct'])->name('products.trash');
   Route::post('products/restore/{id}',[ProductsController::class,'restore'])->name('products.restore');
+  Route::post('products/image/{id}',[ProductsController::class,'deleteImage'])->name('delete.image');
 
 
 Route::get('messages', [AdminMessagesController::class,'index'])->name('messages');
@@ -61,16 +71,49 @@ Route::post('messages/destroy/{di}', [AdminMessagesController::class,'destroy'])
 
 Route::get('city/city-trashed', [CityController::class, 'trashCity'])->name('city.trash');
 Route::post('city/restore/{id}', [CityController::class, 'restore'])->name('city.restore');
+Route::get('setting/about-us', [SettingController::class, 'aboutUS'])->name('setting.about-us');
+Route::post('setting/about-us', [SettingController::class, 'updateAboutUS'])->name('setting.about-us.update');
 
 Route::resources([
     'users'=> UserController::class,
     'categories' => CategoriesController::class,
     'products' => ProductsController::class,
     'coupons' => CouponController::class,
+    'gifts'=>GiftsController::class,
     'delivery' => DeliveryAgentsController::class,
     'city' => CityController::class,
     'slider' => SliderController::class,
 ]);
+
+
+    /* ****** route evaluations dashborad ****** */
+
+
+    Route::prefix('Evaluation')->middleware('auth','type-user:admin,super-admin')->as('evaluation.')->group(function(){
+        Route::prefix('Delivery')->as('delivery.')->group(function(){
+
+            Route::get('/', [EvaluationController::class, 'index_delivery'])->name('index');
+            Route::get('/index', [EvaluationController::class, 'index_delivery'])->name('index2');
+            Route::delete('/delete/{id}', [EvaluationController::class, 'delete_delivery'])->name('delete');
+            Route::post('/change/{id}', [EvaluationController::class, 'change_delivery'])->name('change');
+
+
+        });
+        Route::prefix('Products')->as('products.')->group(function(){
+
+            Route::get('/', [EvaluationController::class, 'index_products'])->name('index');
+            Route::get('/index', [EvaluationController::class, 'index_products'])->name('index2');
+            Route::delete('/delete/{id}', [EvaluationController::class, 'delete_products'])->name('delete');
+            Route::post('/change/{id}', [EvaluationController::class, 'change_products'])->name('change');
+        });
+
+        Route::prefix('store')->as('store.')->group(function(){
+
+            Route::get('/', [EvaluationController::class, 'store_reviews'])->name('index');
+            Route::delete('/delete/{id}', [EvaluationController::class, 'delete_store_review'])->name('delete');
+        });
+
+    });
 
 });
 
@@ -83,6 +126,8 @@ require __DIR__.'/auth.php';
 /* front route */
 
 Route::get('/', [HomeController::class,'index'])->name('home');
+Route::get('/gifts',[GiftController::class,'gifts'])->name('gift');
+Route::get('/gift-details/{id}',[GiftController::class,'giftDetails'])->name('gift.details');
 Route::get('latest-product', [HomeController::class,'latestProduct'])->name('last_product');
 Route::get('product-details/{slug}', [FrontProductsController::class,'prdoductDetails'])->name('product.details');
 Route::get('category/{slug}', [CategoryController::class,'products'])->name('category.product');
@@ -90,6 +135,7 @@ Route::get('category/{slug}', [CategoryController::class,'products'])->name('cat
 Route::get('cart', [CartController::class,'index'])->name('cart');
 Route::post('add-cart', [CartController::class,'store'])->name('add.cart');
 Route::post('update-quantity', [CartController::class,'update_quantity'])->name('update_quantity');
+Route::get('cart/delete/{id}', [CartController::class,'delete'])->name('cart.delete');
 
 Route::get('wishlist', [WishListController::class,'index'])->name('wishlist');
 Route::post('add-wishlist', [WishListController::class,'store'])->name('add.wishlist');
@@ -97,6 +143,20 @@ Route::post('add-wishlist', [WishListController::class,'store'])->name('add.wish
 
 Route::get('contact-us', [MessagesController::class,'index'])->name('contact_us');
 Route::post('add-msg', [MessagesController::class,'store'])->name('add.msg');
+
+Route::post('checkout', [CheckoutController::class,'checkout'])->name('checkout');
+Route::get('Return-and-exchange-policy', function () {
+return view('front.Return-policy');
+})->name('return.policy');
+Route::get('store-reviews',[StoreRiviewsController::class,'index'])->name('store.reviews');
+Route::post('store-reviews/store',[StoreRiviewsController::class,'store'])->name('store-reviews');
+
+/* ****** route evaluation ****** */
+Route::get('eval-product/{id}', [EvaluationController::class,'eval-product']);
+Route::post('eval-product/{id}', [EvaluationController::class,'eval-product'])->name('eval-product');
+
+Route::get('eval-delivery/{id}', [EvaluationController::class,'eval-delivery']);
+Route::post('eval-delivery/{id}', [EvaluationController::class,'eval-delivery'])->name('eval-delivery');
 
 /* ****** route delivery dashborad ****** */
 

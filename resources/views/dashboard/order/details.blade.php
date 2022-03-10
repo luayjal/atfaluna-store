@@ -1,13 +1,13 @@
 
-@extends('admin.layouts.app')
-@section('content')
+<x-dashboard-layout header="الطلبات">
+
 <div class="card">
     <div style="background-color:lavender" class="card-header">
 
-        <h1 style=" color:rgb(151, 35, 35); text-align:center; font-size:50px;margin-top:20px">{{ trans('admin.order details') }} </h1>
+        <h1 style=" color:rgb(151, 35, 35); text-align:center; font-size:50px;margin-top:20px">تفاصيل الطلب </h1>
     </div>
 <div>
-    
+
     <div  class="card-body">
         @if (session()->has('status'))
             @if(session()->get('status') == 201)
@@ -20,7 +20,7 @@
                  </div>
             @endif
         @endif
-        
+
         @if (session()->has('status'))
         <div class="alert alert-success text-center mt-4">
              {!!session()->get('status')!!}
@@ -32,26 +32,27 @@
                 <th >الاسم</th>
                   <th >الايميل </th>
                   <th >الهاتف </th>
-                  <th >الدولة </th>
-               
+                  <th >العنوان </th>
+
             </tr>
-          
-        
+
+
             <tr>
-                <td>{{$order->customer->fname." ". $order->customer->lname}}</td>
+                <td>{{$order->customer->name}}</td>
                   <td>{{$order->customer->email}}</td>
                   <td>{{$order->customer->phone}}</td>
-                  <td>{{$order->customer->country}}</td>
-                 
+                  <td>{{$order->customer->address}}</td>
+
             </tr>
 
         </table>
-        
+
         <h4 class="text-center mt-5">تفاصيل منتجات الطلب</h4>
         <table class="table text-center">
             <tr>
+                <th></th>
                 <th>الاسم</th>
-                <th>الحجم</th>
+                <th>المقاس</th>
                 <th>اللون</th>
                 <th>الكمية</th>
                 <th>السعر</th>
@@ -59,37 +60,40 @@
                 <th></th>
                 <th></th>
             </tr>
-            @foreach ($order->orderProduct as $product)
+            @foreach ($order->Items as $item)
             <tr>
+                <th><p><img src="{{asset($item->product->image_url)}}" width="60px" alt=""></p></th>
                 <th>
-                    <p>{{$product->product->name_ar}}</p>
+                    <p>{{$item->product->name}}</p>
+                </th>
+
+                <th>
+                    <p>{{size($item->variant_id)}}</p>
                 </th>
                 <th>
-                    <p>{{$product->size}}</p>
-                </th>
-                <th>
-                    <p>{{$product->color}}</p>
+                    <p>{{color($item->variant_id)}}</p>
                 </th>
                 <th>
                     <p>
-                        {{$product->quantity}}
+                        {{$item->quantity}}
                     </p>
                 </th>
-             
+
                 <th>
                     <p class="">
-                        {{$product->price}}
-                    </p> 
+                        {{$item->price}}
+                    </p>
                 </th>
                 <th>
                    <p>
-                        {{$product->total}}
+                        {{$item->total}}
                    </p>
                 </th>
-                
+
             </tr>
             @endforeach
             <tr>
+                <th>المجموع الكلي للمنتجات</th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -99,42 +103,27 @@
             </tr>
 
         </table>
-         
+
           <h4 class="text-center mt-5">تفاصيل الطلب</h4>
         <table class="table text-center">
             <tr>
                 <th >كود الخصم</th>
+                <th >قيمة الخصم</th>
                   <th >مجموع المنتجات</th>
-                  <th >قيمة الخصم</th>
                   <th >تكلفة الشحن</th>
                   <th >المجموع الكلي</th>
             </tr>
-          
-        
+
+
             <tr>
-                <td>{{$order->coupon->code??''}}</td>
+                <td>{{$order->coupon->code??'لا يوجد'}}</td>
+                <td>{{$order->total_discount?? 'لا يوجد'}}</td>
                   <td>{{$order->subtotal}}</td>
-                  <td>{{$order->total_discount}}</td>
-                  <td>{{$order->delivery}}</td>
+                  <td>{{$order->shipping_price}}</td>
                   <td>{{ $order->grandtotal}}</td>
             </tr>
 
         </table>
-        
-        
-        <a  class="btn btn-outline-success " href="{{route('order.shipping',$order->id)}}" >
-            <i class="fas fa-truck"></i> شحن
-       </a>
-       
-
-       @if ($order->tracking_id)
-       <a  class="btn btn-warning " href="{{route('order.get.label',$order->tracking_id)}}" >
-        <i class="fas fa-file"></i> احصل على الملصق </a>
-       
-        <a class="btn btn-outline-danger" href="{{route('cancel.shipping',$order->tracking_id)}}"> <i class="fas fa-trash"></i> الغاء</a>
-        @endif
-
     </div>
 
-
-@endsection
+</x-dashboard-layout>

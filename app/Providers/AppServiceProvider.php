@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
             return $id;
 
             });
+
+            Paginator::useBootstrap();
 
     }
 }

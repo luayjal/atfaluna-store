@@ -21,6 +21,7 @@ class CreateProductsTable extends Migration
             $table->text('description')->nullable();
             $table->text('description_size')->nullable();
             $table->string('image')->nullable();
+            $table->string('img_description_size')->nullable();
             $table->string('certificate')->nullable();
             $table->unsignedFloat('price')->default(0);
             $table->unsignedFloat('discount_price')->default(0);
