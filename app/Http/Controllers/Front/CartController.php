@@ -22,12 +22,11 @@ class CartController extends Controller
         $carts = Cart::where([
             'cart_id' => $cart_id,
         ])->get();
-        $totalPrice = $carts->sum(function($item)
-        {
-            return $item->product->price * $item->quantity;
+        $totalPrice = $carts->sum(function ($item) {
+            return $item->product->final_price * $item->quantity;
         });
 
-        return view('front.cart',['carts'=>$carts,'totalPrice'=>$totalPrice,'cities'=>$cities]);
+        return view('front.cart', ['carts' => $carts, 'totalPrice' => $totalPrice, 'cities' => $cities]);
     }
 
 
@@ -39,28 +38,28 @@ class CartController extends Controller
         $product = Product::findOrFail($request->post('product_id'));
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'color'=>'required',
-            'size'=>'required',
-        ],[
-            'color.required'=>'حدث خطأ! الرجاء اختيار اللون',
-            'size.required'=>'حدث خطأ! الرجاء اختيار المقاس',
+            'color' => 'required',
+            'size' => 'required',
+        ], [
+            'color.required' => 'حدث خطأ! الرجاء اختيار اللون',
+            'size.required' => 'حدث خطأ! الرجاء اختيار المقاس',
         ]);
 
 
         $variant = Variant::where('product_id', $product->id)
-          ->whereRaw('id in (select variants_id from variant__options where value = ?)', [$request->post('color')]) //color
-          ->whereRaw('id in (select variants_id from variant__options where value = ?)', [$size = $request->post('size')]) //size
-          ->first();
+            ->whereRaw('id in (select variants_id from variant__options where value = ?)', [$request->post('color')]) //color
+            ->whereRaw('id in (select variants_id from variant__options where value = ?)', [$size = $request->post('size')]) //size
+            ->first();
 
-          // return response()->json($variant);
+        // return response()->json($variant);
 
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'color'=>'required',
-            'size'=>'required',
-            'quantity' => ['int','min:1',new QuantityValidate($variant)],
+            'color' => 'required',
+            'size' => 'required',
+            'quantity' => ['int', 'min:1', new QuantityValidate($variant)],
 
-        ],[
+        ], [
             'quantity.integer' => 'حدث خطأ! الرجاء ادخال كمية صحيحة',
             'quantity.min' => 'حدث خطأ! يجب أن تكون الكمية أكبر من صفر',
 
@@ -78,7 +77,7 @@ class CartController extends Controller
 
         $cart = Cart::where([
             'color' => $color,
-            'size'=>$size,
+            'size' => $size,
             'cart_id' => $cart_id,
             'product_id' =>  $product_id,
             'variant_id' => $variant_id,
@@ -92,52 +91,111 @@ class CartController extends Controller
                 'product_id' => $request->post('product_id'),
                 'quantity' => $request->post('quantity', 1),
                 'color' => $color,
-                'size' =>$size,
+                'size' => $size,
                 'variant_id' => $variant_id,
             ]);
-
         }
         $carts = Cart::where([
             'cart_id' => cart_id(),
         ])->get();
 
-        $totalPrice = $carts->sum(function($item)
-        {
-            return $item->product->price * $item->quantity;
+        $totalPrice = $carts->sum(function ($item) {
+            return $item->product->final_price * $item->quantity;
         });
 
         $data = [
-            'cart' =>$cart,
+            'cart' => $cart,
             'count' => $carts->count(),
             'product' => $product,
-            'totalPrice'=>$totalPrice
+            'totalPrice' => $totalPrice
 
         ];
-         return response()->json($data, 200);
-  }
+        return response()->json($data, 200);
+    }
 
-        public function update_quantity(Request $request)
-        {
-            $cart =  Cart::with('product')->where('product_id',$request->id)->where('cart_id', cart_id())->first();
-            $cart->quantity=$request->quantity;
-            $cart->save();
+    public function update_quantity(Request $request)
+    {
+        $request->validate([
 
+            'quantity' => ['int', 'min:1'],
+
+        ], [
+            'quantity.integer' => 'حدث خطأ! الرجاء ادخال كمية صحيحة',
+            'quantity.min' => 'حدث خطأ! يجب أن تكون الكمية أكبر من صفر',
+
+        ]);
+
+        $cart =  Cart::with('product')->where('product_id', $request->id)->where('cart_id', cart_id())->first();
+        $cart->quantity = $request->quantity;
+        $cart->save();
+
+        $carts = Cart::where([
+            'cart_id' => cart_id(),
+        ])->get();
+        $totalPrice = $carts->sum(function ($item) {
+            return $item->product->final_price * $item->quantity;
+        });
+        $grand_total = $totalPrice;
+        if ($request->city_id != null) {
+
+            $city = City::where('id',$request->city_id)->first();
+
+            $shipping_price = $city->price;
+
+            $grand_total= $shipping_price + $totalPrice;
+
+
+        }
+
+        return response()->json([
+            'cart' => $cart,
+            'totalPrice' => $totalPrice,
+            'grand_total' => $grand_total
+    ]);
+    }
+
+    public function delete($id)
+    {
+        $cart =  Cart::where('product_id', $id)->where('cart_id', cart_id())->first();
+        $cart->delete();
+        return redirect()->back()->with('success', 'تم ازالة المنتج بنجاح');
+    }
+
+    public function shipping_price(Request $request)
+    {
+        $city = City::where('id',$request->id)->first();
+        if ($city) {
+
+            $shipping_price = $city->price;
             $carts = Cart::where([
                 'cart_id' => cart_id(),
             ])->get();
-            $totalPrice = $carts->sum(function($item)
-            {
-                return $item->product->price * $item->quantity;
+
+            $totalPrice = $carts->sum(function ($item) {
+                return $item->product->final_price * $item->quantity;
             });
 
-            return response()->json(['cart'=>$cart,'totalPrice'=>$totalPrice]);
+            return response()->json([
+                'shipping_price' => $shipping_price,
+                'grand_total'=>$shipping_price + $totalPrice,
+                'message' => " success ",
+
+            ],200);
+
+        } else {
+            $carts = Cart::where([
+                'cart_id' => cart_id(),
+            ])->get();
+
+            $totalPrice = $carts->sum(function ($item) {
+                return $item->product->final_price * $item->quantity;
+            });
+
+            return response()->json([
+                'grand_total'=>$totalPrice,
+                'message' => "error",
+            ],404);
         }
 
-        public function delete($id){
-            $cart =  Cart::where('product_id',$id)->where('cart_id', cart_id())->first();
-            $cart->delete();
-            return redirect()->back()->with('success','تم ازالة المنتج بنجاح');
-
-        }
-
+    }
 }

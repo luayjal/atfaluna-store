@@ -100,9 +100,14 @@
 
 <div class="form-group mb-3">
     <label for="">شهادة المنتج :</label>
-    <div class="row">
+    @if ($product->certificate)
+    <div class="position-relative">
+        <button type="button" class="btn btn-danger btn-sm deleteImage position-absolute rounded-circle" id="deleteGallery"><i class="fas fa-times-circle"></i></button>
+
+        <img src="{{ $product->certificate_url }}" id="imageId" imageId={{$product->id}} alt="" width="250" class="img-fit m-1 border">
 
     </div>
+    @endif
     <div class="input-group">
         <div class="custom-file col-7">
             <input type="file" class="form-control"  name="certificate" id="exampleInputFile">
@@ -196,3 +201,4 @@
 </div>
 
 </div>
+

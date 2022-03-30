@@ -26,12 +26,12 @@
                         </a>
 
                         <span class="header-cart-item-info">
-                            {{$cart->quantity }}×  {{$cart->product->price}} رس
+                            {{$cart->quantity }}×  {{$cart->product->final_price}} رس
                         </span>
                     </div>
                 </li>
                 @endforeach
-              
+
             </ul>
 
             <div class="w-full">

@@ -21,11 +21,11 @@ class Cart extends Component
         $carts = CartModel::where([
             'cart_id' => $cart_id,
         ])->get();
-        
+
         $this->totalPrice = $carts->sum(function($item)
         {
-            return $item->product->price * $item->quantity;
-        }); 
+            return $item->product->final_price * $item->quantity;
+        });
     }
 
     /**

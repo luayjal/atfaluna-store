@@ -63,7 +63,13 @@
 						<h4 class="mtext-105 cl2 js-name-detail p-b-14">
 							{{$product->name}}
 						</h4>
-
+                        <span class="fs-18 cl11 d-block">
+                            <i class="zmdi zmdi-star"></i>
+                            <i class="zmdi zmdi-star"></i>
+                            <i class="zmdi zmdi-star"></i>
+                            <i class="zmdi zmdi-star"></i>
+                            <i class="zmdi zmdi-star"></i>
+                        </span>
 						<span class="mtext-106 cl2">
 						{{$product->price}} ر.س
 						</span>
@@ -178,16 +184,14 @@
 				<div class="tab01">
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs" role="tablist">
-						<!-- <li class="nav-item p-b-10">
-							<a class="nav-link active" data-toggle="tab" href="#description" role="tab">الوصف</a>
-						</li> -->
+						 <li class="nav-item p-b-10">
+							<a class="nav-link active" data-toggle="tab" href="#certificate" role="tab">شهادة المنتج</a>
+						</li>
 
-						<!-- <li class="nav-item p-b-10">
-							<a class="nav-link" data-toggle="tab" href="#information" role="tab">معلومات إضافية</a>
-						</li> -->
+
 
 						<li class="nav-item p-b-10">
-							<a class="nav-link" data-toggle="tab" href="#reviews" role="tab">المرجعات (1)</a>
+							<a class="nav-link" data-toggle="tab" href="#reviews" role="tab">المرجعات والتقييمات</a>
 						</li>
 					</ul>
 
@@ -196,6 +200,16 @@
 
 
 						<!-- - -->
+						<div class="tab-pane fade active show" id="certificate" role="tabpanel">
+							<div class="row">
+								<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
+									<div class="p-b-30 m-lr-15-sm">
+                                        <img class="img-fluid" src="{{asset($product->certificate_url)}}" alt="">
+									</div>
+								</div>
+							</div>
+						</div>
+
 						<div class="tab-pane fade" id="reviews" role="tabpanel">
 							<div class="row">
 								<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
@@ -284,10 +298,6 @@
 		</div>
 
 		<div class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
-			<!-- <span class="stext-107 cl6 p-lr-25">
-				SKU: JAK-01
-			</span> -->
-
 			<span class="stext-107 cl6 p-lr-25">
 				القسم :  أطقم وقمصان , ملابس أولاد
 			</span>

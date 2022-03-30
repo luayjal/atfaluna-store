@@ -1,5 +1,7 @@
 {
     "in-stock":"متوفر",
     "sold-out":"نفذت الكمية",
-    "draft":"معلق"
+    "draft":"معلق",
+    "active":"نشط",
+    "inactive":"غير نشط"
 }

@@ -18,5 +18,8 @@ class Variant extends Model
     public function option(){
         return $this->hasMany(Variant_Option::class,'variants_id');
     }
+    public function orderItem(){
+        return $this->hasMany(OrderItem::class,'variant_id');
+    }
 
 }

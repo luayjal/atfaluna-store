@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdvertisingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\UserController;
@@ -23,10 +24,11 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Admin\DeliveryAgentsController;
 use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\MessagesController as AdminMessagesController;
+use App\Http\Controllers\Front\AdvertisingController as FrontAdvertisingController;
 use App\Http\Controllers\Front\GiftController;
 use App\Http\Controllers\Front\ProductsController as FrontProductsController;
+use App\Http\Controllers\Front\ReturnPolicyController;
 use App\Http\Controllers\Front\StoreRiviewsController;
-use App\Models\Gift;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +85,7 @@ Route::resources([
     'delivery' => DeliveryAgentsController::class,
     'city' => CityController::class,
     'slider' => SliderController::class,
+    'advertising'=>AdvertisingController::class,
 ]);
 
 
@@ -127,6 +130,7 @@ require __DIR__.'/auth.php';
 
 Route::get('/', [HomeController::class,'index'])->name('home');
 Route::get('/gifts',[GiftController::class,'gifts'])->name('gift');
+Route::get('/advertising',[FrontAdvertisingController::class,'index'])->name('advertising');
 Route::get('/gift-details/{id}',[GiftController::class,'giftDetails'])->name('gift.details');
 Route::get('latest-product', [HomeController::class,'latestProduct'])->name('last_product');
 Route::get('product-details/{slug}', [FrontProductsController::class,'prdoductDetails'])->name('product.details');
@@ -136,7 +140,7 @@ Route::get('cart', [CartController::class,'index'])->name('cart');
 Route::post('add-cart', [CartController::class,'store'])->name('add.cart');
 Route::post('update-quantity', [CartController::class,'update_quantity'])->name('update_quantity');
 Route::get('cart/delete/{id}', [CartController::class,'delete'])->name('cart.delete');
-
+Route::post('shipping-price',[CartController::class,'shipping_price']);
 Route::get('wishlist', [WishListController::class,'index'])->name('wishlist');
 Route::post('add-wishlist', [WishListController::class,'store'])->name('add.wishlist');
 
@@ -145,9 +149,9 @@ Route::get('contact-us', [MessagesController::class,'index'])->name('contact_us'
 Route::post('add-msg', [MessagesController::class,'store'])->name('add.msg');
 
 Route::post('checkout', [CheckoutController::class,'checkout'])->name('checkout');
-Route::get('Return-and-exchange-policy', function () {
-return view('front.Return-policy');
-})->name('return.policy');
+Route::get('checkout/payments/{id}', [CheckoutController::class,'formPayment'])->name('checkout.payment');
+Route::get('checkout/{order_id}/callback', [CheckoutController::class,'callback'])->name('checkout.callback');
+Route::get('Return-and-exchange-policy',[ReturnPolicyController::class,'index'])->name('return.policy');
 Route::get('store-reviews',[StoreRiviewsController::class,'index'])->name('store.reviews');
 Route::post('store-reviews/store',[StoreRiviewsController::class,'store'])->name('store-reviews');
 

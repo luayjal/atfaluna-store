@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory; use SoftDeletes;
     protected $fillable = ['code','name', 'slug', 'category_id','certificate','description','description_size','img_description_size','image', 'price','discount_price','quantity', 'status'];
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url','certificate_url','final_price'];
     public function category(){
         return $this->belongsTo(Category::class);
     }
@@ -22,6 +22,9 @@ class Product extends Model
     }
     public function sizes(){
         return $this->belongsToMany(Size::class,'product_size','product_id','size_id');
+    }
+    public function advertising(){
+        return $this->hasOne(Advertising::class);
     }
     /**
      * Get all of the cart for the Product
@@ -62,5 +65,19 @@ class Product extends Model
     public function getImageDiscAttribute()
     {
         return asset('uploads/'.$this->img_description_size);
+    }
+    public function getCertificateUrlAttribute()
+    {
+        return asset('uploads/'.$this->certificate);
+    }
+    public function getFinalPriceAttribute(){
+        if ($this->discount_price > 0) {
+            $price = $this->discount_price;
+            return $price;
+        } else {
+            $price = $this->price;
+            return $price;
+        }
+
     }
 }

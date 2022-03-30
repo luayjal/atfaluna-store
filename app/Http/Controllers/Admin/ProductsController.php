@@ -169,11 +169,6 @@ class ProductsController extends Controller
                 Variant_Option::create($variant_options_color);
             }
 
-      /*  //store color
-       $product->colors()->attach($this->getColorOrSize($request->colors,Color::class));
-       //store size
-       $product->sizes()->attach($this->getColorOrSize($request->sizes,Size::class)); */
-
           return redirect()->route('admin.products.index')->with('success','تم اضافة المنتج بنجاح');
     }
 
@@ -290,7 +285,7 @@ class ProductsController extends Controller
                 $data['img_description_size']= $img_disc->store('/images',['disk' => 'uploads']);
                 }
 
-        return $data;
+        //return $data;
         $product->update($data);
         // update gallery
         if($request->hasFile('gallery')){
@@ -378,12 +373,25 @@ class ProductsController extends Controller
     }
 
     public function deleteImage($id){
-            $image = ProductImage::findOrFail($id);
-            if($image->image_path){
+            $image = ProductImage::find($id);
+            $product = Product::find($id);
 
-                Storage::disk('uploads')->delete($image->image_path);
-                $image->delete();
-                return response()->json('success',200);
+            if ($image) {
+                if($image->image_path){
+
+                    Storage::disk('uploads')->delete($image->image_path);
+                    $image->delete();
+                    return response()->json('success',200);
+                }
+            }
+
+            if ($product) {
+                if ($product->certificate) {
+                    Storage::disk('uploads')->delete($product->certificate);
+                    $product->certificate = null;
+                    $product->save();
+                    return response()->json('success',200);
+                }
             }
 
     }

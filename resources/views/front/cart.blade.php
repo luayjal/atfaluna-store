@@ -3,7 +3,7 @@
     <!-- breadcrumb -->
     <div class="container">
         <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-            <a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
+            <a href="/" class="stext-109 cl8 hov-cl1 trans-04">
                 الرئيسية
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </a>
@@ -17,7 +17,11 @@
                 <b>{{ session('success') }}</b>
             </div>
         @endif
-
+        @if (session()->has('error'))
+            <div class="alert alert-danger text-center w-75">
+                {{ session()->get('error') }}
+            </div>
+        @endif
     </div>
 
 
@@ -60,7 +64,7 @@
                                         <td class="column-2">{{ $cart->product->name }}</td>
                                         <td class="column-2">{{ $cart->color }}</td>
                                         <td class="column-2">{{ $cart->size }}</td>
-                                        <td class="column-3">{{ $cart->product->price }} ر.س</td>
+                                        <td class="column-3">{{ $cart->product->final_price }} ر.س</td>
                                         <td class="column-4">
 
                                             <div class="wrap-num-product flex-w m-r-auto m-l-0">
@@ -69,7 +73,7 @@
                                                     <i class="fs-16 zmdi zmdi-minus"></i>
                                                 </div>
                                                 <input class="quantity mtext-104 cl3 txt-center num-product"
-                                                    type="number" name="quantity" value="{{ $cart->quantity }}">
+                                                    type="number" min="1" name="quantity" value="{{ $cart->quantity }}">
 
                                                 <div
                                                     class="update_quantity btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
@@ -78,7 +82,7 @@
                                             </div>
                                         </td>
                                         <td class="productPrice column-5">
-                                            {{ $cart->product->price * $cart->quantity }}
+                                            {{ $cart->product->final_price * $cart->quantity }}
                                             ر.س</td>
                                     </tr>
                                 @endforeach
@@ -134,13 +138,13 @@
                             </div>
 
                             <div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
-                                <p class="stext-111 cl6 p-t-2 ">
-                                    5.00 ر.س
+                                <p class="mtext-110 cl6 p-t-2 shipping-price">
+                                    اختر المدينة أولاً
                                 </p>
 
                                 <div class="p-t-15">
                                     <span class="stext-112 cl8">
-                                        احسب الشحن
+                                        عناون الشحن
                                     </span>
 
                                     <div class="bor8 bg0 m-b-12">
@@ -158,7 +162,8 @@
                                     </div>
 
                                     <div class="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
-                                        <select class="js-select2" name="city">
+                                        <select class="js-select2 shipping_price" name="city">
+                                            <option value="">اختر المدينة</option>
                                             @foreach ($cities as $city)
                                                 <option value="{{ $city->id }}">{{ $city->name }}</option>
                                             @endforeach
@@ -177,12 +182,12 @@
                                             placeholder="الرمز البريدي">
                                     </div>
 
-                                    <div class="flex-w">
+                                    {{-- <div class="flex-w">
                                         <div
                                             class="flex-c-m stext-101 cl2 size-115 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer">
                                             تحديث المجموع
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                 </div>
                             </div>
@@ -196,8 +201,8 @@
                             </div>
 
                             <div class="size-209 p-t-1">
-                                <span class="mtext-110 cl2">
-                                    79.65 ر.س
+                                <span class="mtext-110 cl2 grand_total">
+                                    {{ $totalPrice }} ر.س
                                 </span>
                             </div>
                         </div>
@@ -212,9 +217,10 @@
     </form>
     @push('js')
         <script>
-            $(".update_quantity").click(function() {
+            $(".update_quantity,.quantity").on("click change keyup", function() {
                 var quantity = $(".quantity").val();
                 var id = $(".id").val();
+                var city_id = $('.shipping_price').val();
                 console.log(id);
                 console.log(quantity);
 
@@ -224,6 +230,7 @@
                     data: {
                         id: id,
                         quantity: quantity,
+                        city_id:city_id,
                         _token: $('meta[name="csrf-token"]').attr('content')
                     }, // data to submit
 
@@ -232,9 +239,10 @@
                         $(".totalPrice").text("");
                         $(".totalPrice").html(data['totalPrice'] + "ر.س");
                         $(".productPrice").text("");
-                        $(".productPrice").html(data['cart']['product']['price'] * data['cart'][
+                        $(".productPrice").html(data['cart']['product']['final_price'] * data['cart'][
                             'quantity'
                         ] + "ر.س");
+                        $(".grand_total").html(data.grand_total + " ر.س")
 
                     },
                     error: function(jqXhr, textStatus, errorMessage) { // if any error come then
@@ -242,6 +250,28 @@
                     }
                 });
             })
+        </script>
+        <script>
+            $(document).ready(function() {
+                $('.shipping_price').change(function() {
+                    var id = $(this).val();
+                    var data = {
+                        "_token": "{{ csrf_token() }}",
+                        "id": id
+                    }
+                    $.post('shipping-price', data)
+                        .done(function(result) {
+                            console.log(result);
+                           $(".shipping-price").html(result.shipping_price + " ر.س");
+                           $(".grand_total").html(result.grand_total + " ر.س");
+                        })
+                        .fail(function(error) {
+                            console.log(error.responseJSON.message);
+                            $(".shipping-price").html("اختر المدينة أولاً");
+                            $(".grand_total").html(error.responseJSON.grand_total + " ر.س");
+                        });
+                });
+            });
         </script>
     @endpush
 

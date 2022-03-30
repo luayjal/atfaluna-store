@@ -51,6 +51,7 @@
         <table class="table text-center">
             <tr>
                 <th></th>
+                <th>كود المنتج</th>
                 <th>الاسم</th>
                 <th>المقاس</th>
                 <th>اللون</th>
@@ -63,6 +64,9 @@
             @foreach ($order->Items as $item)
             <tr>
                 <th><p><img src="{{asset($item->product->image_url)}}" width="60px" alt=""></p></th>
+                <th>
+                    <p>{{$item->variant->code_variant}}</p>
+                </th>
                 <th>
                     <p>{{$item->product->name}}</p>
                 </th>
@@ -94,6 +98,7 @@
             @endforeach
             <tr>
                 <th>المجموع الكلي للمنتجات</th>
+                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>

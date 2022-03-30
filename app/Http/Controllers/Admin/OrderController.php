@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 class OrderController extends Controller
 {
    public function index(){
-    $orders = Order::paginate();
+    $orders = Order::latest()->paginate();
     return view('dashboard.order.index',[
         'orders' => $orders,
     ]);
@@ -17,7 +17,7 @@ class OrderController extends Controller
 
    public function orderDetails($id){
     $order = Order::findOrFail($id);
-    
+
     //return $order->Items;
     return view('dashboard.order.details',[
         'order' => $order,

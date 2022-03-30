@@ -272,8 +272,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </ul>
                             </li>
                         @endcan
-
-                        @can('viewAny', App\Models\DeliveryAgents::class)
+                         @can('viewAny', App\Models\DeliveryAgents::class)
                             <li class="nav-item">
                                 <a href="{{ route('admin.evaluation.store.index') }}"
                                     class="nav-link @if (request()->routeIs('admin.evaluation.store.index')) active @endif">
@@ -282,10 +281,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </a>
                             </li>
                         @endcan
-                        @can('viewAny', App\Models\DeliveryAgents::class)
+                             @can('viewAny', App\Models\DeliveryAgents::class)
                             <li class="nav-item">
                                 <a href="{{ route('admin.evaluation.delivery.index') }}"
-                                    class="nav-link @if (request()->routeIs('admin.delivery.index')) active @endif">
+                                    class="nav-link @if (request()->routeIs('admin.evaluation.delivery.index')) active @endif">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>تقييمات مندوبي التوصيل</p>
                                 </a>
@@ -294,15 +293,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         @can('viewAny', App\Models\DeliveryAgents::class)
                             <li class="nav-item">
                                 <a href="{{ route('admin.evaluation.products.index') }}"
-                                    class="nav-link @if (request()->routeIs('admin.delivery.index')) active @endif">
+                                    class="nav-link @if (request()->routeIs('admin.evaluation.products.index')) active @endif">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>تقييمات المنتجات </p>
                                 </a>
                             </li>
                         @endcan
-
-
-
                         @can('viewAny', App\Models\Message::class)
                             <li class="nav-item">
                                 <a href="{{ route('admin.messages') }}" class="nav-link">
@@ -313,7 +309,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </a>
                             </li>
                         @endcan
-
+                       
                         <li class="nav-header">المنتجات والأقسام</li>
                         @can('viewAny', App\Models\Category::class)
 
@@ -397,6 +393,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </li>
                         @endcan
 
+                         <li class="nav-header">العروض  والهدايا</li>
                         @can('viewAny', App\Models\Coupon::class)
 
                             <li class="nav-item has-treeview ">
@@ -444,6 +441,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     @endcan
                                 </ul>
                             </li>
+                            <li class="nav-item has-treeview ">
+                            <a href="#" class="nav-link @if (request()->routeIs('admin.coupons.*')) active @endif">
+
+                                <i class="nav-icon fab fa-youtube"></i>
+                                <p>
+                                     عروض الفيديو
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.advertising.index') }}"
+                                            class="nav-link @if (request()->routeIs('admin.advertising.index')) active @endif">
+                                            <i class="nav-icon fas fa-play"></i>
+                                            <p>عرض الفيديوهات</p>
+                                        </a>
+                                    </li>
+                            </ul>
+                        </li>
                         @endcan
 
                         <li class="nav-header">الطلبات</li>
@@ -451,7 +467,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                         <li class="nav-item has-treeview "> {{-- menu-open --}}
                             <a href="#" class="nav-link @if (request()->routeIs('admin.orders.*')) active @endif">
-                                <i class="nav-icon fas fa-network-wired"></i>
+                                <i class="nav-icon fas fa-shopping-bag"></i>
                                 <p>
                                     الطلبات
                                     <i class="right fas fa-angle-left"></i>
@@ -545,9 +561,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         @endcan
                         <li class="nav-item">
                             <a href="{{ route('admin.setting.about-us') }}" class="nav-link">
-                                <i class="nav-icon fas fa-envelope"></i>
+                                <i class="nav-icon fas fa-address-card"></i>
                                 <p>
-                                    من نحن
+                                    الصفحات
                                 </p>
                             </a>
                         </li>
