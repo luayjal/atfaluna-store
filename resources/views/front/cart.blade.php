@@ -73,7 +73,8 @@
                                                     <i class="fs-16 zmdi zmdi-minus"></i>
                                                 </div>
                                                 <input class="quantity mtext-104 cl3 txt-center num-product"
-                                                    type="number" min="1" name="quantity" value="{{ $cart->quantity }}">
+                                                    type="number" min="1" name="quantity"
+                                                    value="{{ $cart->quantity }}">
 
                                                 <div
                                                     class="update_quantity btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
@@ -106,6 +107,47 @@
                                     تحديث العربة
                                 </div>
                             </a>
+                        </div>
+                        <h4 class="mtext-109 cl2 p-b-30">
+                         الهدايا
+                        </h4>
+                        <div class="wrap-table-shopping-cart">
+                            <table class="table-shopping-cart">
+                                <tr class="table_head">
+                                    <th class="column-1">الصورة</th>
+                                    <th class="column-1">المنتج</th>
+
+                                    <th class="column-3">السعر</th>
+
+
+                                </tr>
+                                @foreach ($gift_carts as $cart)
+                                    <input class="id" type="hidden" value="{{ $cart->gift->id }}">
+                                    @csrf
+                                    <tr class="table_row">
+                                        <td class="column-1">
+
+                                            <div class="how-itemcart1">
+                                                <a href="{{ route('cart.delete', $cart->gift_id) }}">
+                                                    <img src="{{ $cart->gift->image_url }}" alt="IMG">
+                                                </a>
+                                                <a href="{{ route('cart.delete', $cart->gift_id) }}"
+                                                    class="btn btn-outline-danger mx-3 mt-3 position-absolute">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </a>
+
+                                            </div>
+
+                                        </td>
+                                        <td class="column-2">{{ $cart->gift->title }}</td>
+
+                                        <td class="column-3">0 ر.س</td>
+
+
+                                    </tr>
+                                @endforeach
+
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -144,23 +186,40 @@
 
                                 <div class="p-t-15">
                                     <span class="stext-112 cl8">
-                                        عناون الشحن
+                                        عنوان الشحن
                                     </span>
-
+                                    @error('name')
+                                        <div>
+                                            <span class="text-danger mt-2 mb-2">{{ $message }}</span>
+                                        </div>
+                                    @enderror
                                     <div class="bor8 bg0 m-b-12">
                                         <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="name"
-                                            placeholder="الاسم كامل">
+                                            placeholder="الاسم كامل" value="{{ old('name') }}">
                                     </div>
-
+                                    @error('phone')
+                                        <div>
+                                            <span class="text-danger mt-2 mb-2">{{ $message }}</span>
+                                        </div>
+                                    @enderror
                                     <div class="bor8 bg0 m-b-12">
                                         <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="phone"
-                                            placeholder="رقم الجوال">
+                                            placeholder="رقم الجوال" value="{{ old('phone', session('phone')) }}">
                                     </div>
+                                    @error('email')
+                                        <div>
+                                            <span class="text-danger mt-2 mb-2">{{ $message }}</span>
+                                        </div>
+                                    @enderror
                                     <div class="bor8 bg0 m-b-12">
                                         <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="email" name="email"
-                                            placeholder="البريد الالكتروني ">
+                                            placeholder="البريد الالكتروني " value="{{ old('email') }}">
                                     </div>
-
+                                    @error('city')
+                                        <div>
+                                            <span class="text-danger mt-2 mb-2">{{ $message }}</span>
+                                        </div>
+                                    @enderror
                                     <div class="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
                                         <select class="js-select2 shipping_price" name="city">
                                             <option value="">اختر المدينة</option>
@@ -171,15 +230,23 @@
                                         </select>
                                         <div class="dropDownSelect2"></div>
                                     </div>
-
+                                    @error('street')
+                                        <div>
+                                            <span class="text-danger mt-2 mb-2">{{ $message }}</span>
+                                        </div>
+                                    @enderror
                                     <div class="bor8 bg0 m-b-12">
                                         <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="street"
-                                            placeholder="الشارع">
+                                            placeholder="الشارع" value="{{ old('street') }}">
                                     </div>
-
+                                    @error('postcode')
+                                        <div>
+                                            <span class="text-danger mt-2 mb-2">{{ $message }}</span>
+                                        </div>
+                                    @enderror
                                     <div class="bor8 bg0 m-b-22">
                                         <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode"
-                                            placeholder="الرمز البريدي">
+                                            placeholder="الرمز البريدي" value="{{ old('postcode') }}">
                                     </div>
 
                                     {{-- <div class="flex-w">
@@ -230,7 +297,7 @@
                     data: {
                         id: id,
                         quantity: quantity,
-                        city_id:city_id,
+                        city_id: city_id,
                         _token: $('meta[name="csrf-token"]').attr('content')
                     }, // data to submit
 
@@ -262,8 +329,8 @@
                     $.post('shipping-price', data)
                         .done(function(result) {
                             console.log(result);
-                           $(".shipping-price").html(result.shipping_price + " ر.س");
-                           $(".grand_total").html(result.grand_total + " ر.س");
+                            $(".shipping-price").html(result.shipping_price + " ر.س");
+                            $(".grand_total").html(result.grand_total + " ر.س");
                         })
                         .fail(function(error) {
                             console.log(error.responseJSON.message);

@@ -11,7 +11,7 @@ use App\Models\Variant_Option;
 class ProductsController extends Controller
 {
     public function prdoductDetails($slug){
-        $product = Product::where('slug',$slug)->first();
+        $product = Product::with('evaluation')->where('slug',$slug)->first();
       // return $product->variants[0]->option;
       $variants = Variant::where('product_id', $product->id)->get();
       $sizes = Variant_Option::whereRaw('variants_id in (select id from variants where product_id = ?)', [$product->id])

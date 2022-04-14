@@ -10,7 +10,7 @@ class DeliveryAgentsPolicy
 {
     use HandlesAuthorization;
     public function before(User $user , $ability) {
-        if($user->type  == 'super-admin') return true;	       
+        if($user->type  == 'super-admin') return true;
     }
     /**
      * Determine whether the user can view any models.
@@ -75,6 +75,10 @@ class DeliveryAgentsPolicy
 
     }
 
+    public function viewEvaluation(User $user)
+    {
+        return $user->hasAbility('delivery.evaluation');
+    }
     /**
      * Determine whether the user can restore the model.
      *
@@ -95,7 +99,8 @@ class DeliveryAgentsPolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, DeliveryAgents $deliveryAgents)
-    {
+
+   {
         //
     }
 }

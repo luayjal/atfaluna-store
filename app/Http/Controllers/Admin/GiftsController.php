@@ -50,7 +50,6 @@ class GiftsController extends Controller
             'title' => 'required',
             'details' => 'required',
             'code' => 'required|unique:coupons,code',
-            'product_id' => 'required',
             'status' => 'required',
         ],[
             'required' => 'حقل :attribute مطلوب ملؤه.',
@@ -122,6 +121,7 @@ class GiftsController extends Controller
     {
         $gift = Gift::findOrFail($id);
         $gift->delete();
+        $gift->deleting($id);
         return redirect()->route('admin.gifts.index')->with('status','تمت حذف الهدية بنجاح');
     }
 }

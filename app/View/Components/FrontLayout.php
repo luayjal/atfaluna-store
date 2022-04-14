@@ -29,7 +29,7 @@ class FrontLayout extends Component
     {
         $categories = Category::where('status','active')->whereDoesntHave('parent')->get();
         $cart = Cart::where('cart_id' , cart_id())->get();
-
+        
         $deliverys= DB::table('delivery_agents')
         ->join('users', 'users.id', '=', 'delivery_agents.user_id')
         ->select('name'

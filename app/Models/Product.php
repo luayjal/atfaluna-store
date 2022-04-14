@@ -46,6 +46,9 @@ class Product extends Model
     public function orderItem(){
         return $this->hasMany(OrderItem::class,'product_id');
     }
+    public function evaluation(){
+        return $this->hasMany(ProductsEvaluation::class,'product_id');
+    }
 
     public function isinwishlist($prdouct_id)
     {

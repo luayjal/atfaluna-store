@@ -10,7 +10,7 @@ class ProductPolicy
 {
     use HandlesAuthorization;
     public function before(User $user , $ability) {
-        if($user->type  == 'super-admin') return true;	       
+        if($user->type  == 'super-admin') return true;
     }
     /**
      * Determine whether the user can view any models.
@@ -75,6 +75,10 @@ class ProductPolicy
 
     }
 
+    public function viewEvaluation(User $user)
+    {
+        return $user->hasAbility('product.evaluation');
+    }
     /**
      * Determine whether the user can restore the model.
      *

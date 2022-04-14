@@ -8,8 +8,9 @@ use App\Models\Product;
 use App\Models\Variant;
 use Illuminate\Http\Request;
 use App\Models\Variant_Option;
-use App\Http\Controllers\Controller;
 use App\Rules\QuantityValidate;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
@@ -19,20 +20,40 @@ class CartController extends Controller
     {
         $cities = City::get();
         $cart_id = cart_id();
+
         $carts = Cart::where([
-            'cart_id' => $cart_id,
+            'cart_id' =>  $cart_id,
+            'gift_id' => null,
         ])->get();
+
+        $gift_carts = Cart::where([
+            'cart_id' => $cart_id,
+            'product_id' => null,
+        ])->get();
+
         $totalPrice = $carts->sum(function ($item) {
             return $item->product->final_price * $item->quantity;
         });
 
-        return view('front.cart', ['carts' => $carts, 'totalPrice' => $totalPrice, 'cities' => $cities]);
+        return view('front.cart',
+            [
+                'carts' => $carts,
+                'totalPrice' => $totalPrice,
+                'cities' => $cities,
+                'gift_carts' => $gift_carts,
+            ]
+        );
     }
 
 
 
     public function store(Request $request)
     {
+        if (session()->has('phone')) {
+            session()->put('phone', $request->phone);
+        } else {
+            session()->put('phone', $request->phone);
+        }
 
         $cart_id = cart_id();
         $product = Product::findOrFail($request->post('product_id'));
@@ -51,7 +72,7 @@ class CartController extends Controller
             ->whereRaw('id in (select variants_id from variant__options where value = ?)', [$size = $request->post('size')]) //size
             ->first();
 
-        // return response()->json($variant);
+       //  return response()->json($variant);
 
         $request->validate([
             'product_id' => 'required|exists:products,id',
@@ -76,11 +97,11 @@ class CartController extends Controller
 
 
         $cart = Cart::where([
-            'color' => $color,
-            'size' => $size,
-            'cart_id' => $cart_id,
-            'product_id' =>  $product_id,
-            'variant_id' => $variant_id,
+            ['color' , '=', $color],
+            [ 'size' , '=', $size],
+            ['cart_id', '=', $cart_id],
+            ['product_id', '=',  $product_id],
+            ['variant_id' , '=', $variant_id],
         ])->first();
 
         if ($cart) {
@@ -97,8 +118,8 @@ class CartController extends Controller
         }
         $carts = Cart::where([
             'cart_id' => cart_id(),
-        ])->get();
-
+        ])->with('product')->get();
+            return $carts;
         $totalPrice = $carts->sum(function ($item) {
             return $item->product->final_price * $item->quantity;
         });
@@ -138,37 +159,36 @@ class CartController extends Controller
         $grand_total = $totalPrice;
         if ($request->city_id != null) {
 
-            $city = City::where('id',$request->city_id)->first();
+            $city = City::where('id', $request->city_id)->first();
 
             $shipping_price = $city->price;
 
-            $grand_total= $shipping_price + $totalPrice;
-
-
+            $grand_total = $shipping_price + $totalPrice;
         }
 
         return response()->json([
             'cart' => $cart,
             'totalPrice' => $totalPrice,
             'grand_total' => $grand_total
-    ]);
+        ]);
     }
 
     public function delete($id)
     {
-        $cart =  Cart::where('product_id', $id)->where('cart_id', cart_id())->first();
+        $cart =  Cart::where('product_id', $id)->orWhere('gift_id',$id)->where('cart_id', cart_id())->first();
         $cart->delete();
         return redirect()->back()->with('success', 'تم ازالة المنتج بنجاح');
     }
 
     public function shipping_price(Request $request)
     {
-        $city = City::where('id',$request->id)->first();
+        $city = City::where('id', $request->id)->first();
         if ($city) {
 
             $shipping_price = $city->price;
             $carts = Cart::where([
                 'cart_id' => cart_id(),
+                'gift_id' => null,
             ])->get();
 
             $totalPrice = $carts->sum(function ($item) {
@@ -177,11 +197,10 @@ class CartController extends Controller
 
             return response()->json([
                 'shipping_price' => $shipping_price,
-                'grand_total'=>$shipping_price + $totalPrice,
+                'grand_total' => $shipping_price + $totalPrice,
                 'message' => " success ",
 
-            ],200);
-
+            ], 200);
         } else {
             $carts = Cart::where([
                 'cart_id' => cart_id(),
@@ -192,10 +211,53 @@ class CartController extends Controller
             });
 
             return response()->json([
-                'grand_total'=>$totalPrice,
+                'grand_total' => $totalPrice,
                 'message' => "error",
-            ],404);
+            ], 404);
+        }
+    }
+
+    public function addGift(Request $request)
+    {
+
+        if (session()->has('phone')) {
+            session()->put('phone', $request->phone);
+        } else {
+            session()->put('phone', $request->phone);
         }
 
+        $cart_id = cart_id();
+        $request->validate([
+            'gift_id' => ['required', 'exists:coupons,id'],
+            'phone' => ['required'],
+            'code' => [
+                'required',
+                Rule::exists('coupons')->where(function ($query) use ($request) {
+                    return $query->where('id', $request->gift_id);
+                }),
+            ]
+
+        ]);
+
+        $gift_id = $request->post('gift_id');
+        $cart = Cart::where([
+
+            'cart_id' => $cart_id,
+            'gift_id' =>  $gift_id,
+
+        ])->first();
+
+        //return $gift_id;
+
+        if ($cart) {
+            return redirect()->back()->with('error', 'تم اضافة الهدية مسبقاً');
+        } else {
+            $cart = Cart::create([
+                'cart_id' => $cart_id,
+                'gift_id' => $gift_id,
+                'quantity' => '1',
+            ]);
+        }
+        return redirect()->back()->with('success', 'تم اضافة الهدية بنجاح');
     }
 }

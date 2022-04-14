@@ -11,7 +11,9 @@
                 <i class="zmdi zmdi-close"></i>
             </div>
         </div>
-
+        @php
+           // return($carts);
+        @endphp
         <div class="header-cart-content flex-w js-pscroll">
             <ul class="carts header-cart-wrapitem w-full">
                 @foreach ($carts as $cart)
@@ -27,6 +29,27 @@
 
                         <span class="header-cart-item-info">
                             {{$cart->quantity }}×  {{$cart->product->final_price}} رس
+                        </span>
+                    </div>
+                </li>
+                @endforeach
+
+            </ul>
+            <span class="mtext-103">الهدايا</span>
+            <ul class="carts header-cart-wrapitem w-full">
+                @foreach ($gift_carts as $cart)
+                <li class="header-cart-item flex-w flex-t m-b-12">
+                    <div class="header-cart-item-img">
+                        <img src="{{$cart->gift->image_url}}" alt="IMG">
+                    </div>
+
+                    <div class="header-cart-item-txt p-t-8">
+                        <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+                           {{$cart->gift->title}}
+                        </a>
+
+                        <span class="header-cart-item-info">
+                            مجاناً
                         </span>
                     </div>
                 </li>

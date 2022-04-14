@@ -29,7 +29,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="">صورة الغلاف </label>
+                            <label for="">الصورة  </label>
                             <input style=" font-family:Times New Roman; font-size:20px" type="file" name="cover_image"
                                 class="form-control @error('cover_image') is-invalid @enderror" value="{{old('cover_image')}}">
                             @error('cover_image')
@@ -42,15 +42,19 @@
                             <select style=" font-family:Times New Roman; font-size:20px" name="status"   class="form-control @error('status') is-invalid @enderror" >
                                 <option style="color:rgb(151, 35, 35);" value="">
                                     اختر الحالة</option>
-                                <option value="active">فعال</option>
-                                <option value="inactive">غير فعال</option>
+                                <option  @if ($gift->status == 'active')
+                                    selected
+                                @endif  value="active">فعال</option>
+                                <option @if ($gift->status == 'inactive')
+                                    selected
+                                @endif value="inactive">غير فعال</option>
                             </select>
                             @error('status')
                                 <p class="invalid-feedback">{{ $message }}</p>
                             @enderror
                         </div>
 
-
+{{--
                         <div class="col-md-6 mb-3">
                             <label>المنتج </label>
                             <select style=" font-family:Times New Roman; font-size:20px"
@@ -66,6 +70,15 @@
                                @endforeach
                             </select>
                             @error('product_id')
+                                <p class="invalid-feedback">{{ $message }}</p>
+                            @enderror
+                        </div> --}}
+
+                        <div class="col-md-6 mb-3">
+                            <label for="">السعر</label>
+                            <input style=" font-family:Times New Roman; font-size:20px" type="text" name="price"
+                                class="form-control @error('price') is-invalid @enderror" value="{{old('price',$gift->price)}}">
+                            @error('price')
                                 <p class="invalid-feedback">{{ $message }}</p>
                             @enderror
                         </div>

@@ -10,7 +10,7 @@
                 @can('create', App\Models\Coupon::class)
 
                 <a style="margin-bottom:15px;" href="{{ route('admin.gifts.create') }}" class="btn btn-info ">
-                   إضافة مسابقة <i class="fas fa-plus"></i></a>
+                   إضافة هدية <i class="fas fa-plus"></i></a>
                     @endcan
 
                 <table class="table table-bordered border-primary text-center">
@@ -20,7 +20,7 @@
 
                             <th>كود الهدية</th>
                             <th>العنوان</th>
-                            <th>المنتج</th>
+                            {{-- <th>المنتج</th> --}}
                             <th>الحالة</th>
                             <th>عمليات</th>
                         </tr>
@@ -31,7 +31,7 @@
 
                                 <td>{{ $gift->code }}</td>
                                 <td>{{ $gift->title }}</td>
-                                <td>{{ $gift->product->name }}</td>
+                                {{-- <td>{{ $gift->product->name }}</td> --}}
                                 <td>
                                     @if ($gift->status == 'active')
 

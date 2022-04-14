@@ -8,6 +8,7 @@ use Illuminate\View\Component;
 class Cart extends Component
 {
     public $carts;
+    public $gift_carts ;
     public $totalPrice;
     /**
      * Create a new component instance.
@@ -16,10 +17,21 @@ class Cart extends Component
      */
     public function __construct()
     {
-        $this->carts = CartModel::where('cart_id' , cart_id())->get();
         $cart_id = cart_id();
+
+        $this->carts = CartModel::where([
+            'cart_id' => $cart_id,
+            'gift_id' => null,
+        ])->get();
+
         $carts = CartModel::where([
             'cart_id' => $cart_id,
+            'gift_id' => null,
+        ])->get();
+
+        $this->gift_carts = CartModel::where([
+            'cart_id' => $cart_id,
+            'product_id' => null,
         ])->get();
 
         $this->totalPrice = $carts->sum(function($item)
@@ -35,6 +47,7 @@ class Cart extends Component
      */
     public function render()
     {
+
         return view('layouts.cart');
     }
 }

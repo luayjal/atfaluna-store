@@ -46,7 +46,7 @@
                 var attr = $(".colorlabel.active").attr('for');
                 var color=  $("input[id='" +attr+"']").val();
                 if (color) {
-                    
+
                     formdata.append( 'color' , color ?? null);
                 }
 
@@ -54,12 +54,15 @@
                 var csrf=  $("input[name='_token']").val();
                 formdata.append( '_token' , csrf);
 
+                var phone=  $(".phone").val();
+                formdata.append( 'phone' , phone);
+
                 var product_id=  $("input[name='product_id']").val();
                 formdata.append( 'product_id' , product_id);
 
                 var quantity=  $("input[name='quantity']").val();
                 formdata.append( 'quantity' , quantity);
-                console.log(color);
+                console.log(phone);
                 $.ajax({
                     type: 'post',
                     enctype: 'multipart/form-data',
@@ -69,6 +72,7 @@
                     contentType: false,
                     cache: false,
                     success: function(data) {
+                        $('#modal_cart').modal('hide')
                         console.log(data);
 
                         $('.js-show-cart').attr('data-notify',data.count);

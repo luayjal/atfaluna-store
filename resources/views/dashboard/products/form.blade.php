@@ -19,33 +19,43 @@
     <select name="category_id" class="form-control col-7 @error('category_id') is-invalid @enderror">
         <option value="">اختر قسم</option>
         @foreach ($categories as $category)
-            <option value="{{ $category->id }}" @if ($category->id == old('category_id', $product->category_id)) selected @endif>{{ $category->name }}</option>
+            <option value="{{ $category->id }}" @if ($category->id == old('category_id', $product->category_id)) selected @endif>
+                {{ $category->name }}</option>
         @endforeach
     </select>
     @error('category_id')
         <p class="invalid-feedback d-block">{{ $message }}</p>
     @enderror
 </div>
-<div class="form-group col-md-7 mb-3">
+{{-- <div class="form-group col-md-7 mb-3">
     <label for="">الوصف:</label>
     <textarea name="description" id="editor"
-        class="form-control col-7 @error('description') is-invalid @enderror"> {!! Request::old('description', $product->description) !!} </textarea>
+        class="form-control col-7 @error('description') is-invalid @enderror"> {{ old('description', $product->description) }} </textarea>
     @error('description')
+        <p class="invalid-feedback d-block">{{ $message }}</p>
+    @enderror
+</div> --}}
+
+<div class="form-group col-7  mb-3">
+    <label for="">الوصف:</label>
+    <textarea name="description" id="editor" class="form-control  @error('description') is-invalid @enderror"
+        rows="20">{{ old('description', $product->description) }}  </textarea>
+    @error('return_policy')
         <p class="invalid-feedback d-block">{{ $message }}</p>
     @enderror
 </div>
 
 <div class="form-group col-md-7 mb-3">
     <label for="">وصف المقاس:</label>
-    <textarea name="description_size"
-        class="form-control  @error('description_size') is-invalid @enderror"  rows="3">{{ old('description_size', $product->description_size) }}  </textarea>
+    <textarea name="description_size" class="form-control  @error('description_size') is-invalid @enderror"
+        rows="3">{{ old('description_size', $product->description_size) }}  </textarea>
     @error('description_size')
         <p class="invalid-feedback d-block">{{ $message }}</p>
     @enderror
 </div>
 
 <div class="form-group mb-3">
-    <label for="">صورة وصف  المقاس:</label>
+    <label for="">صورة وصف المقاس:</label>
     <div><img src="{{ $product->image_disc }}" height="200" class="mb-3"></div>
 
     <div class="input-group ">
@@ -80,8 +90,10 @@
     <div class="row">
         @foreach ($product->images as $image)
             <div class="col-md-2 text-center position-relative">
-                <button type="button" class="btn btn-danger btn-sm deleteImage position-absolute rounded-circle" id="deleteGallery"><i class="fas fa-times-circle"></i></button>
-                <img src="{{ $image->image_url }}" id="imageId" imageId={{$image->id}} alt="" height="80" class="img-fit m-1 border">
+                <button type="button" class="btn btn-danger btn-sm deleteImage position-absolute rounded-circle"
+                    id="deleteGallery"><i class="fas fa-times-circle"></i></button>
+                <img src="{{ $image->image_url }}" id="imageId" imageId={{ $image->id }} alt="" height="80"
+                    class="img-fit m-1 border">
 
             </div>
         @endforeach
@@ -101,16 +113,18 @@
 <div class="form-group mb-3">
     <label for="">شهادة المنتج :</label>
     @if ($product->certificate)
-    <div class="position-relative">
-        <button type="button" class="btn btn-danger btn-sm deleteImage position-absolute rounded-circle" id="deleteGallery"><i class="fas fa-times-circle"></i></button>
+        <div class="position-relative">
+            <button type="button" class="btn btn-danger btn-sm deleteImage position-absolute rounded-circle"
+                id="deleteGallery"><i class="fas fa-times-circle"></i></button>
 
-        <img src="{{ $product->certificate_url }}" id="imageId" imageId={{$product->id}} alt="" width="250" class="img-fit m-1 border">
+            <img src="{{ $product->certificate_url }}" id="imageId" imageId={{ $product->id }} alt="" width="250"
+                class="img-fit m-1 border">
 
-    </div>
+        </div>
     @endif
     <div class="input-group">
         <div class="custom-file col-7">
-            <input type="file" class="form-control"  name="certificate" id="exampleInputFile">
+            <input type="file" class="form-control" name="certificate" id="exampleInputFile">
             <label class="" for="exampleInputFile"></label>
         </div>
 
@@ -126,10 +140,11 @@
         <div class="input-group-prepend">
             <span class="input-group-text">$</span>
         </div>
-        <input type="text" name="price" value="{{ old('price', $product->price) }}" class="form-control @error('price') is-invalid @enderror">
+        <input type="text" name="price" value="{{ old('price', $product->price) }}"
+            class="form-control @error('price') is-invalid @enderror">
         @error('price')
-        <p class="invalid-feedback d-block">{{ $message }}</p>
-    @enderror
+            <p class="invalid-feedback d-block">{{ $message }}</p>
+        @enderror
     </div>
 </div>
 <div class="form-group mb-3">
@@ -153,11 +168,11 @@
     <label for="">الحالة:</label>
     <div>
         <label><input type="radio" name="status" value="in-stock" @if (old('status', $product->status) == 'in-stock') checked @endif>
-           {{__('in-stock')}}</label>
+            {{ __('in-stock') }}</label>
         <label><input type="radio" name="status" value="sold-out" @if (old('status', $product->status) == 'sold-out') checked @endif>
-            {{__('sold-out')}}</label>
+            {{ __('sold-out') }}</label>
         <label><input type="radio" name="status" value="draft" @if (old('status', $product->status) == 'draft') checked @endif>
-            {{__('draft')}}</label>
+            {{ __('draft') }}</label>
     </div>
     @error('status')
         <p class="invalid-feedback d-block">{{ $message }}</p>
@@ -165,7 +180,7 @@
 </div>
 <div class="form-group mb-3">
     <label for="">الألوان:</label>
-    <input id="color" type="text" name="colors" value="{{ old('colors')?? $colors}}"
+    <input id="color" type="text" name="colors" value="{{ old('colors') ?? $colors }}"
         class="color tags form-control col-7 @error('colors') is-invalid @enderror">
     @error('colors')
         <p class="invalid-feedback d-block">{{ $message }}</p>
@@ -173,7 +188,7 @@
 </div>
 <div class="form-group mb-3">
     <label for="">الأحجام:</label>
-    <input id="size" type="text" name="sizes" value="{{ old('sizes') ?? $sizes}}"
+    <input id="size" type="text" name="sizes" value="{{ old('sizes') ?? $sizes }}"
         class="size form-control tags col-7 @error('sizes') is-invalid @enderror">
     @error('sizes')
         <p class="invalid-feedback d-block">{{ $message }}</p>
@@ -201,4 +216,3 @@
 </div>
 
 </div>
-

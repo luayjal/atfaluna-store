@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model
 {
     use HasFactory;
-    protected $fillable = ['cart_id','user_id','product_id','variant_id','color','size','quantity'];
+    protected $fillable = ['cart_id','user_id','product_id','variant_id','color','size','quantity','gift_id'];
 
     /**
      * Get the product that owns the Cart
@@ -18,5 +18,9 @@ class Cart extends Model
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+    public function gift()
+    {
+        return $this->belongsTo(Gift::class, 'gift_id');
     }
 }

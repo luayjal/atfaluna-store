@@ -33,7 +33,7 @@
                 description: 'Coffee Order #1',
 
                 // Required
-                publishable_api_key: 'pk_test_78zDZufWxyJqeP8ttUHkEJxTH8B3hVJE2kpogqmC',
+                publishable_api_key: "{{config("moyasar.publishable_api_key")}}",
 
                 // Required
                 // This URL is used to redirect the user when payment process has completed

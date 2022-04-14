@@ -42,3 +42,10 @@ function size($variant_id)
     ->where('option','size')->first();
     return $size->value;
 }
+
+function variant_code($variant_id)
+{
+    $size = Variant_Option::where('variants_id', $variant_id)
+    ->where('option','size')->first();
+    return $size->value;
+}

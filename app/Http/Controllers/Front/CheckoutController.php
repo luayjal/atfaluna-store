@@ -29,11 +29,10 @@ class CheckoutController extends Controller
             [   'name'=>'required|string',
                 'phone'=>'required',
                 'email'=>'email|required',
-                'city'=>'required'
-        ],
-            [
-                'required'=>'هذا الحقل أجباري'
-            ]
+                'city'=>'required',
+                'street'=>'required',
+                'postcode'=>'required',
+        ]
         );
 
         if ($request->payment_method == 'cancel') {
@@ -42,10 +41,15 @@ class CheckoutController extends Controller
         }
 
         $referance_id = 'ord-' . time();
-        $carts = Cart::with('product')->where('cart_id', App::make('cart.id'))->update([
+        $carts = Cart::with('product')->where('cart_id', cart_id())->update([
             'referance_id' => $referance_id
         ]);
-        $carts = Cart::with('product')->where('referance_id', $referance_id)->get();
+
+        $carts = Cart::with('product')->where([
+            ['referance_id' ,'=', $referance_id],
+            [ 'gift_id','=', null]
+            ])->get();
+
 
 
         $total_product = $carts->sum(function ($item) {
@@ -95,17 +99,32 @@ class CheckoutController extends Controller
         $order->grandtotal = $total_product + $city->price;
         $order->coupon_id = $total_discount['id']  ?? null;
         $order->save();
-
+       // dd($carts);
 
         foreach ($carts as $item) {
             $order->Items()->create([
                 'product_id' => $item->product_id,
                 'variant_id' => $item->variant_id,
                 'quantity' => $item->quantity,
-                'price' => $item->product->price,
-                'total' => $item->quantity * $item->product->price,
+                'price' => $item->product->final_price,
+                'total' => $item->quantity * $item->product->final_price,
             ]);
         }
+
+     /*****  save gift in order items ******/
+     $gift_carts = Cart::with('product')->where([
+        ['referance_id' ,'=', $referance_id],
+        [ 'gift_id','<>', null]
+        ])->get();
+
+     foreach ($gift_carts as $item) {
+        $order->Items()->create([
+            'gift_id' => $item->gift_id,
+            'quantity' => 1,
+            'price' => 0,
+            'total' =>0,
+        ]);
+    }
 
 
         /************************************* */
@@ -116,13 +135,15 @@ class CheckoutController extends Controller
         return response()->json($msg) ;
         $request->user()->notify(new OrderProcessed($order)); */
 
+
+
+
+        //  ***************  Payment Form *********
         return redirect()->route('checkout.payment', $order->id);
 
 
 
-        //---------------------------------------------------
-        //  ***************  Payment Getway *********
-        //---------------------------------------------------
+
 
 
     }
@@ -141,7 +162,7 @@ class CheckoutController extends Controller
         $id_payment = $request->query('id');
         $payment = new Moyasar();
         $response = $payment->fetch($id_payment);
-
+        //dd($response);
         /* $res = $payment->capture($id_payment);
         dd($res); */
         // to do
@@ -159,10 +180,18 @@ class CheckoutController extends Controller
 
             $carts = Cart::where('referance_id', $referance_id)->get();
 
-            foreach ($carts as $cart) {
-                $cart->product->decrement('quantity', $cart->quantity);
+            foreach ($carts->where('gift_id', null) as $cart) {
+                if ( $cart->product->quantity <= $cart->quantity  ) {
+                    $cart->product()->update([
+                        'quantity' => 0,
+                    ]);
+                }else{
+
+                    $cart->product->decrement('quantity', $cart->quantity);
+                }
                 $cart->delete();
             }
+            Cart::where('referance_id', $referance_id)->where('gift_id','<>',null)->delete();
 
             return redirect()->route('cart')->with('success', 'تم الدفع بنجاح');
         } else if ($response['status'] == "failed") {

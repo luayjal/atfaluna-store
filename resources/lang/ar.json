@@ -3,5 +3,16 @@
     "sold-out":"نفذت الكمية",
     "draft":"معلق",
     "active":"نشط",
-    "inactive":"غير نشط"
+    "inactive":"غير نشط",
+    "products":"المنتجات",
+    "categories":"الأقسام",
+    "orders":"الطلبات",
+    "users":"المستخدمين",
+    "sliders":"الاعلانات",
+    "gift&coupon":"الهدايا والكوبونات وعروض الفيديو",
+    "cities" :"المدن",
+    "deliveries":"مناديب التوصيل",
+    "setting":"الاعدادت",
+    "messages":"الرسائل"
+
 }
