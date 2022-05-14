@@ -30,7 +30,7 @@
 
                 // Required
                 // A small description of the current payment process
-                description: 'Coffee Order #1',
+                description: 'طلب من متجر أطفالنا',
 
                 // Required
                 publishable_api_key: "{{config("moyasar.publishable_api_key")}}",
@@ -45,6 +45,7 @@
                 // Default: ['creditcard', 'applepay', 'stcpay']
                 methods: [
                     'creditcard',
+                    'stcpay'
                 ],
 
                 metadata: {

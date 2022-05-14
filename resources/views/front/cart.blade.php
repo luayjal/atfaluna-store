@@ -27,6 +27,7 @@
 
     <!-- Shoping Cart -->
     <form action="{{ route('checkout') }}" method="POST" class="bg0 p-t-75 p-b-85">
+        @csrf
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
@@ -45,7 +46,7 @@
                                 </tr>
                                 @foreach ($carts as $cart)
                                     <input class="id" type="hidden" value="{{ $cart->product->id }}">
-                                    @csrf
+
                                     <tr class="table_row">
                                         <td class="column-1">
 
@@ -109,7 +110,7 @@
                             </a>
                         </div>
                         <h4 class="mtext-109 cl2 p-b-30">
-                         الهدايا
+                            الهدايا
                         </h4>
                         <div class="wrap-table-shopping-cart">
                             <table class="table-shopping-cart">
@@ -255,7 +256,27 @@
                                             تحديث المجموع
                                         </div>
                                     </div> --}}
-
+                                    <hr>
+                                    <div class="form-group">
+                                        <h5 class="mb-3" >طريقة الدفع</h5>
+                                        @error('payment_method')
+                                            <p class="text-danger">{{$message}}</p>
+                                        @enderror
+                                        <div class="form-check mb-3">
+                                            <label for="credit_card" class="form-check-label">
+                                                <input type="radio" class="form-check-input" name="payment_method" id="credit_card"
+                                                    value="credit_card">
+                                                البطاقة الائتمانية
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label for="cod" class="form-check-label">
+                                                <input type="radio" class="form-check-input" name="payment_method"
+                                                    id="cod" value="cod">
+                                                الدفع عند الاستلام
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

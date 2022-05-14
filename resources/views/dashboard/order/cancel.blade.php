@@ -11,32 +11,31 @@
                         <button type="submit" class="btn btn-secondary" style="color: white;">بحث</button>
                     </form>
                 </div>
-                <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered border-primary">
 
 
 
                     <thead class="table-stripped">
                         <tr style="text-align: center">
 
-                            <th scope="col">رقم العملية</th>
-                            <th scope="col">طريقة الدفع</th>
-                            <th scope="col">حالة الدفع</th>
-                            <th scope="col">حالة الطلب</th>
-                            <th scope="col">المجموع الفرعي</th>
-                            <th scope="col">تكلفة الشحن</th>
-                            <th scope="col">المجموع الكلي</th>
-                            <th scope="col">تاريخ الانشاء</th>
-                            <th scope="col">الاجراءات</th>
+                            <th>رقم العملية</th>
+                            <th>طريقة الدفع</th>
+                            <th>حالة الدفع</th>
+                            <th>حالة الطلب</th>
+                            <th>المجموع الفرعي</th>
+                            <th>تكلفة الشحن</th>
+                            <th>المجموع الكلي</th>
+                            <th>تاريخ الانشاء</th>
+                            <th>الاجراءات</th>
                         </tr>
                     <tbody>
                         @foreach ($orders as $order)
                             <tr style="text-align: center">
                                 <td>{{ $order->transaction_id }}</td>
-                                <td class="small font-weight-bolder">{{ __($order->payment_method) }}</td>
+                                <td>{{ __($order->payment_method) }}</td>
                                 <td>
                                     <p
-                                        class="small font-weight-bolder p-2 rounded-lg @if ($order->payment_status == 'paid') border border-success text-success @elseif ($order->payment_status == 'unpaid')border border-danger text-danger @endif">
+                                        class="p-2 rounded-lg @if ($order->payment_status == 'paid') border border-success text-success @elseif ($order->payment_status == 'unpaid')border border-danger text-danger @endif">
                                         {{ __($order->payment_status) }}
 
                                     </p>
@@ -113,7 +112,6 @@
                     </tbody>
                     </thead>
                 </table>
-            </div>
                 {{ $orders->links() }}
             </div>
 

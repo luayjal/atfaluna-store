@@ -13,6 +13,16 @@
     "cities" :"المدن",
     "deliveries":"مناديب التوصيل",
     "setting":"الاعدادت",
-    "messages":"الرسائل"
+    "messages":"الرسائل",
+    "paid":"تم الدفع",
+    "unpaid":"لم يتم الدفع",
+    "cod":"الدفع عند الاستلام",
+    "credit_card":"البطاقة الائتمانية",
+    "pending":"معلق",
+    "preparing":"قيد التحضير",
+    "in_route":"قيد التوصيل",
+    "canceled":"ملغي",
+    "refound":"مرجع",
+    "completed":"مكتمل"
 
 }

@@ -29,6 +29,7 @@ use App\Http\Controllers\Front\GiftController;
 use App\Http\Controllers\Front\ProductsController as FrontProductsController;
 use App\Http\Controllers\Front\ReturnPolicyController;
 use App\Http\Controllers\Front\StoreRiviewsController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +56,9 @@ Route::get('/dashboard/home', function () {
 Route::prefix('dashboard')->middleware('auth', 'type-user:admin,super-admin')->as('admin.')->group(function () {
 
     Route::get('orders', [OrderController::class, 'index'])->name('orders');
+    Route::get('orders-canceld', [OrderController::class, 'OrderCancel'])->name('orders.cancel');
     Route::get('orders/details/{id}', [OrderController::class, 'orderDetails'])->name('orders.details');
+    Route::post('order/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('order.cancel');
     Route::get('orders/eval/{id}', [OrderController::class, 'orderEval'])->name('orders.eval');
 
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');

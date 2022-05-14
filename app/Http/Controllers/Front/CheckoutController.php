@@ -12,32 +12,42 @@ use App\Models\Costumer;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Services\Coupons\Coupons;
+use App\Services\Moyasar\Moyasar;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\OrderProcessed;
-use App\Services\Moyasar\Moyasar;
+use App\Services\MalathSms\sendMessage;
 use Illuminate\Support\Facades\Session;
-use App\Services\Whatsapp\sendMessage;
+
 
 class CheckoutController extends Controller
 {
     public function checkout(Request $request)
     {
+
         $request->validate(
-            [   'name'=>'required|string',
-                'phone'=>'required',
-                'email'=>'email|required',
-                'city'=>'required',
-                'street'=>'required',
-                'postcode'=>'required',
-        ]
+            [
+                'name' => 'required|string',
+                'phone' => 'required',
+                'email' => 'email|required',
+                'city' => 'required',
+                'street' => 'required',
+                'postcode' => 'required',
+                'payment_method' => 'required'
+            ]
         );
 
         if ($request->payment_method == 'cancel') {
 
             return redirect('/')->with('success', 'تم  الغاء طلبك بنجاح');
+        }
+
+        $carts = Cart::where('cart_id', cart_id())->get();
+
+        if ($carts->count() <= 0) {
+            return redirect()->route('cart')->with('error', ' لا يمكن اكمال الطلب والسلة فارغة ');
         }
 
         $referance_id = 'ord-' . time();
@@ -46,9 +56,9 @@ class CheckoutController extends Controller
         ]);
 
         $carts = Cart::with('product')->where([
-            ['referance_id' ,'=', $referance_id],
-            [ 'gift_id','=', null]
-            ])->get();
+            ['referance_id', '=', $referance_id],
+            ['gift_id', '=', null]
+        ])->get();
 
 
 
@@ -62,7 +72,6 @@ class CheckoutController extends Controller
         // apply coupon
 
         if ($request->code) {
-
         }
 
         //---------------------------------------------------
@@ -91,7 +100,7 @@ class CheckoutController extends Controller
         //---------------------------------------------------
         $order = new Order;
         $order->customer_id = $customer->id;
-        //  $order->payment_method = $request->payment_method;
+        $order->payment_method = $request->payment_method;
         $order->payment_status = 'unpaid';
         $order->transaction_id =  $referance_id;
         $order->subtotal = $total_product;
@@ -99,7 +108,7 @@ class CheckoutController extends Controller
         $order->grandtotal = $total_product + $city->price;
         $order->coupon_id = $total_discount['id']  ?? null;
         $order->save();
-       // dd($carts);
+        // dd($carts);
 
         foreach ($carts as $item) {
             $order->Items()->create([
@@ -111,41 +120,57 @@ class CheckoutController extends Controller
             ]);
         }
 
-     /*****  save gift in order items ******/
-     $gift_carts = Cart::with('product')->where([
-        ['referance_id' ,'=', $referance_id],
-        [ 'gift_id','<>', null]
+        /*****  save gift in order items ******/
+        $gift_carts = Cart::with('product')->where([
+            ['referance_id', '=', $referance_id],
+            ['gift_id', '<>', null]
         ])->get();
 
-     foreach ($gift_carts as $item) {
-        $order->Items()->create([
-            'gift_id' => $item->gift_id,
-            'quantity' => 1,
-            'price' => 0,
-            'total' =>0,
-        ]);
-    }
+        foreach ($gift_carts as $item) {
+            $order->Items()->create([
+                'gift_id' => $item->gift_id,
+                'quantity' => 1,
+                'price' => 0,
+                'total' => 0,
+            ]);
+        }
 
 
-        /************************************* */
-        /*    $message = new sendMessage();
-        $message->send($customer->phone);
-        $msg =  $message->nexmoSend($customer->phone);
-        return $msg;
-        return response()->json($msg) ;
-        $request->user()->notify(new OrderProcessed($order)); */
 
 
+        if ($request->payment_method == "cod") {
+
+           /*  $carts = Cart::where('referance_id', $referance_id)->get();
+
+            foreach ($carts->where('gift_id', null) as $cart) {
+                if ($cart->product->quantity <= $cart->quantity) {
+                    $cart->product()->update([
+                        'quantity' => 0,
+                    ]);
+                } else {
+
+                    $cart->product->decrement('quantity', $cart->quantity);
+                }
+                $cart->delete();
+            }
+            Cart::where('referance_id', $referance_id)->where('gift_id', '<>', null)->delete(); */
+
+           /*  $message = "تم اتمام طلبك بنجاح في متجر أطفالنا ويجري تحضيره للتوصيل
+                رقم العملية هو $order->transaction_id
+            "; */
+            $message = "تجربة ارسال رسالة";
+            $send_message = new sendMessage();
+           $resp =  $send_message->sendSms($customer->phone, $message);
+            return $resp;
+            return redirect()->route('cart')->with('success', 'تم انشاء الطلب  بنجاح');
+        } else if ($request->payment_method == "credit_card") {
+
+            return redirect()->route('checkout.payment', $order->id);
+        }
 
 
         //  ***************  Payment Form *********
         return redirect()->route('checkout.payment', $order->id);
-
-
-
-
-
-
     }
 
     public function formPayment($id)
@@ -162,42 +187,41 @@ class CheckoutController extends Controller
         $id_payment = $request->query('id');
         $payment = new Moyasar();
         $response = $payment->fetch($id_payment);
-        //dd($response);
-        /* $res = $payment->capture($id_payment);
-        dd($res); */
         // to do
         if ($response['status'] == "paid") {
             //update order
             $order = Order::where('transaction_id', $referance_id)->first();
             $order->payment_status = 'paid';
-            $order->status = "preparing";
+            //$order->status = "preparing";
             $order->update();
-            //send mail
-            $details['title'] = 'لديك طلب جديد';
-            $details['body'] = 'قام شخص بطلب عباءة جديدة';
 
-            //Mail::to('luay99@outlook.sa')->send(new NewOrderCreated($details, $order));
+            //send message
+            $message = "تم اتمام طلبك بنجاح في متجر أطفالنا ويجري تحضيره للتوصيل
+                رقم العملية هو $order->transaction_id
+            ";
+            $send_message = new sendMessage();
+            $send_message->sendSms($order->customer->phone, $message);
+
 
             $carts = Cart::where('referance_id', $referance_id)->get();
 
             foreach ($carts->where('gift_id', null) as $cart) {
-                if ( $cart->product->quantity <= $cart->quantity  ) {
+                if ($cart->product->quantity <= $cart->quantity) {
                     $cart->product()->update([
                         'quantity' => 0,
                     ]);
-                }else{
+                } else {
 
                     $cart->product->decrement('quantity', $cart->quantity);
                 }
                 $cart->delete();
             }
-            Cart::where('referance_id', $referance_id)->where('gift_id','<>',null)->delete();
+            Cart::where('referance_id', $referance_id)->where('gift_id', '<>', null)->delete();
 
-            return redirect()->route('cart')->with('success', 'تم الدفع بنجاح');
+            return redirect()->route('cart')->with('success', 'تم اتمام عمليةالدفع بنجاح');
         } else if ($response['status'] == "failed") {
 
             return redirect()->route('cart')->with('error', 'حدث خطأ! لم يتم اتمام عملية الدفع');
-
         }
     }
 

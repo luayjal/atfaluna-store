@@ -17,7 +17,7 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', Category::class); 
+        $this->authorize('viewAny', Category::class);
 
         $categores = Category::latest()->paginate();
 
@@ -29,7 +29,7 @@ class CategoriesController extends Controller
     public function trashCategory()
     {
         $categores = Category::onlyTrashed()->latest()->paginate();
-       
+
         return view('dashboard.category.trash',[
             'categories' => $categores,
         ]);
@@ -42,7 +42,7 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Category::class); 
+        $this->authorize('create', Category::class);
 
         $categories = Category::all();
        //dd($categories);
@@ -59,7 +59,7 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Category::class); 
+        $this->authorize('create', Category::class);
 
         $request->validate([
             'name'=>'required|min:3|max:100|unique:categories,name',
@@ -107,10 +107,10 @@ class CategoriesController extends Controller
     public function edit($id)
     {
         $category = Category::findOrFail($id);
-        $this->authorize('update', $category); 
+        $this->authorize('update', $category);
 
         $categories = Category::all();
-       
+
         return view('dashboard.category.edit',[
             'category' => $category,
             'categories'=>$categories,
@@ -127,7 +127,7 @@ class CategoriesController extends Controller
     public function update(Request $request, $id)
     {
         $category = Category::findOrFail($id);
-        $this->authorize('update', $category); 
+        $this->authorize('update', $category);
 
         $request->merge([
             'slug' => Str::slug_ar($request->name),
@@ -141,8 +141,8 @@ class CategoriesController extends Controller
             $data['image'] = $file->store('/images',['disk' => 'uploads']);
             $prevImg = $category->image;
         }
-        
-       
+
+
         $category->update($data);
         if($prevImg){
 
@@ -154,11 +154,11 @@ class CategoriesController extends Controller
     public function restore($id){
 
         $category = Category::withTrashed()->findOrFail($id);
-        $this->authorize('delete', $category); 
+        $this->authorize('delete', $category);
 
             $category->restore();
-        
-            return redirect()->route('admin.categories.index')->with('success','تم استرجاع القسم بنجاح');    
+
+            return redirect()->route('admin.categories.index')->with('success','تم استرجاع القسم بنجاح');
     }
 
     /**
@@ -170,7 +170,7 @@ class CategoriesController extends Controller
     public function destroy($id)
     {
        $category = Category::withTrashed()->findOrFail($id);
-       $this->authorize('delete', $category); 
+       $this->authorize('delete', $category);
 
        if ($category->trashed()) {
         $category->restore();
@@ -185,6 +185,6 @@ class CategoriesController extends Controller
         Storage::disk('uploads')->delete($prevImg);
     }
        return redirect()->route('admin.categories.index')->with('success','تم حذف القسم بنجاح');
-    
+
     }
 }

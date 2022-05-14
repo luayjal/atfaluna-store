@@ -10,14 +10,22 @@ use App\Models\OrderItem;
 class OrderController extends Controller
 {
    public function index(){
-    $orders = Order::latest()->paginate();
+    $orders = Order::where('status','<>','canceled')->latest()->paginate();
     return view('dashboard.order.index',[
+        'orders' => $orders,
+    ]);
+
+   }
+   public function OrderCancel(){
+    $orders = Order::where('status','canceled')->latest()->paginate();
+    return view('dashboard.order.cancel',[
         'orders' => $orders,
     ]);
    }
 
    public function orderDetails($id){
     $order = Order::with('items')->findOrFail($id);
+    //return $order;
     //return OrderItem::where('order_id',$id)->with('variant')->with('product')->get();
    $products=  $order->Items->where('gift_id',null)->all() ;
   //  dd($products->variant);
@@ -34,5 +42,13 @@ class OrderController extends Controller
    $url =route('eval.product', $key);
 
     return redirect()->back()->with('url',$url);
+   }
+
+   public function cancelOrder($id){
+
+    $order = Order::findOrFail($id);
+    $order->status = "canceled";
+    $order->save();
+    return redirect()->back()->with('success',"تم الغاء الطلب بنجاح");
    }
 }

@@ -475,6 +475,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <p>عرض الطلبات</p>
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.orders.cancel') }}"
+                                            class="nav-link @if (request()->routeIs('admin.orders')) active @endif">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>عرض الطلبت الملغية</p>
+                                        </a>
+                                    </li>
 
                                 </ul>
                             </li>
